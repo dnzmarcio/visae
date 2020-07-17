@@ -68,6 +68,6 @@ run_ca <- function(data,
 
   #https://stackoverflow.com/questions/49470474/saving-r-shiny-app-as-a-function-with-arguments-passed-to-the-shiny-app
   shinyOptions(data = data)
-  source(system.file("ca.R", package = "visae"))$value
+  source(system.file("ca_shiny.R", package = "visae"))$value
 }
 
