@@ -11,7 +11,8 @@ ca_ae(
   label = "AE",
   contr_indicator = TRUE,
   mass_indicator = TRUE,
-  contr_threshold = NULL
+  contr_threshold = NULL,
+  mass_threshold = NULL
 )
 }
 \arguments{
