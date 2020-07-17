@@ -28,13 +28,14 @@
 #'              ae_grade = ae_g,
 #'              ae_domain = ae_d,
 #'              ae_term = ae_t)
+#'
 #'@import shiny
 #'@import magrittr
 #'@import dplyr
 #'@importFrom shinyjs js useShinyjs extendShinyjs
 #'@importFrom DT renderDataTable dataTableOutput
 #'@importFrom rlang enquos enquo quo_is_null
-#'
+#'@importFrom stats na.exclude
 #'@export
 run_ca <- function(data,
                    group,
