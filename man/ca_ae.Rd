@@ -35,6 +35,9 @@ use of dot size to represent the overall relative frequency of each \code{ae_cla
 
 \item{contr_threshold}{numerical value between 0 an 1 filtering
 \code{ae_class} with contribution greater than \code{contr_threshold}.}
+
+\item{mass_threshold}{numerical value between 0 an 1 filtering
+\code{ae_class} with mass greater than \code{mass_threshold}.}
 }
 \value{
 a list of

@@ -12,6 +12,8 @@
 #'use of dot size to represent the overall relative frequency of each \code{ae_class}.
 #'@param contr_threshold numerical value between 0 an 1 filtering
 #'\code{ae_class} with contribution greater than \code{contr_threshold}.
+#'@param mass_threshold numerical value between 0 an 1 filtering
+#'\code{ae_class} with mass greater than \code{mass_threshold}.
 #'
 #'@return a list of
 #'\item{tab_abs}{a tibble showing absolute frequency of \code{ae_class} by \code{group};}
