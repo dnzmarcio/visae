@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Marcio Augusto Diniz and Michael Luu
 Maintainer: Marcio Augusto Diniz <marcio.diniz@cshs.org>, Michael Luu <michael.luu@cshs.org>
 Description: Implementation of Shiny apps to visualize adverse events.
-License: GLP-2
+License: GPL(>= 2)
 Depends: shiny (>= 1.4.0),
          dplyr (>= 1.0.0),
          ggplot2 (>= 3.3.0),
