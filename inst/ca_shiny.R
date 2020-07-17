@@ -343,7 +343,7 @@ ui = function(data){
                                           p("Gillian Gresham", "<gillian.gresham@cshs.org>"),
                                           p("Andre Rogatko", "<andre.rogatko@cshs.org>"),
                                           p(strong("Cedars Sinai Medical Center")),
-                                          p(strong("Samuel Oschin Compreheensive Cancer Institute,
+                                          p(strong("Samuel Oschin Comprehensive Cancer Institute,
                                               Biostatistics Core"))
                                    ),
                                    column(width = 8, offset = 1,
