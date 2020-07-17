@@ -32,7 +32,7 @@
 #'              ae_term = ae_t)
 #'              }
 #'
-#'@import shiny
+#'@rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #'@import magrittr
 #'@import dplyr
 #'@importFrom shinyjs js useShinyjs extendShinyjs

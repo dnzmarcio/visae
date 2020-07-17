@@ -38,7 +38,7 @@
 #'@import magrittr
 #'@import ggplot2
 #'@import dplyr
-#'@importFrom rlang .data enquos
+#'@importFrom rlang .data enquos :=
 #'@importFrom tidyr pivot_wider
 #'@importFrom ca ca
 #'@importFrom stats addmargins
