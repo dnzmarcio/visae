@@ -3,6 +3,7 @@ Implementation of Shiny apps to visualize adverse events.
 
 - Correspondence Analysis
 ```{}
+library(visae)
 library(magrittr)
 library(dplyr)
 group <- c(rep("A", 50), rep("B", 50))
