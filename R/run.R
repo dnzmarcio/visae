@@ -1,4 +1,4 @@
-#' Correspondence Analysis for Adverse Events
+#'Shiny App for Correspondence Analysis of Adverse Events
 #'
 #'@param data data.frame or tibble object.
 #'@param group unquoted expression indicating the

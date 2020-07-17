@@ -2,7 +2,7 @@
 % Please edit documentation in R/run.R
 \name{run_ca}
 \alias{run_ca}
-\title{Correspondence Analysis for Adverse Events}
+\title{Shiny App for Correspondence Analysis of Adverse Events}
 \usage{
 run_ca(
   data,
@@ -36,7 +36,7 @@ an interactive web application to perform correspondence analysis
 for adverse event data.
 }
 \description{
-Correspondence Analysis for Adverse Events
+Shiny App for Correspondence Analysis of Adverse Events
 }
 \examples{
 library(magrittr)
@@ -51,4 +51,5 @@ dt \%>\% run_ca(., group = trt,
              ae_grade = ae_g,
              ae_domain = ae_d,
              ae_term = ae_t)
+
 }
