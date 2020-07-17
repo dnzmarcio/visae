@@ -94,7 +94,10 @@ ca_ae <- function(data, group, ae_class, label = "AE",
              type = "row",
              contr = aux^2,
              mass = res.ca$rowmass) %>%
-      filter(.data$contr > contr_threshold & .data$mass > mass_threshold) %>%
+      filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
+
+    if (nrow(standard.coordinates.row) > 0)
+      standard.coordinates.row <- standard.coordinates.row %>%
       mutate(contr = .data$contr/max(.data$contr),
              mass = .data$mass/max(.data$mass))
 
@@ -190,7 +193,10 @@ ca_ae <- function(data, group, ae_class, label = "AE",
              type = "row",
              contr = pmax(aux[, 1]^2, aux[, 2]^2),
              mass = res.ca$rowmass) %>%
-      filter(.data$contr > contr_threshold & .data$mass > mass_threshold)  %>%
+      filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
+
+    if (nrow(standard.coordinates.row) > 0)
+      standard.coordinates.row <- standard.coordinates.row %>%
       mutate(contr = .data$contr/max(.data$contr),
              mass = .data$mass/max(.data$mass))
 
