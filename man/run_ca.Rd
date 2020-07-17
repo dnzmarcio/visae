@@ -39,6 +39,7 @@ for adverse event data.
 Shiny App for Correspondence Analysis of Adverse Events
 }
 \examples{
+\donttest{
 library(magrittr)
 library(dplyr)
 group <- c(rep("A", 50), rep("B", 50))
@@ -51,5 +52,6 @@ dt \%>\% run_ca(., group = trt,
              ae_grade = ae_g,
              ae_domain = ae_d,
              ae_term = ae_t)
+             }
 
 }

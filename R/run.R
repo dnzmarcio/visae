@@ -15,7 +15,9 @@
 #'@return an interactive web application to perform correspondence analysis
 #'for adverse event data.
 #'
+#'
 #'@examples
+#'\donttest{
 #'library(magrittr)
 #'library(dplyr)
 #'group <- c(rep("A", 50), rep("B", 50))
@@ -28,6 +30,7 @@
 #'              ae_grade = ae_g,
 #'              ae_domain = ae_d,
 #'              ae_term = ae_t)
+#'              }
 #'
 #'@import shiny
 #'@import magrittr
