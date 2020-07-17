@@ -39,7 +39,7 @@ use of dot size to represent the overall relative frequency of each \code{ae_cla
 \value{
 a list of
 \item{tab_abs}{a tibble showing absolute frequency of \code{ae_class} by \code{group};}
-\item{tab_rel}{a tibble showing relative frequency of \code{ae_class} by \code{group};}
+\item{tab_rel}{a tibble showing percent of \code{ae_class} by \code{group};}
 \item{total_inertia}{a numerical value indicating the total inertia;}
 \item{tab_inertia}{a tibble showing inertia broken down by dimension and the percent relative to the total inertia;}
 \item{asymmetric_plot}{a contribution biplot.}
