@@ -33,7 +33,7 @@
 #'             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
 #'dt %>% ca_ae(., group = trt, ae = ae_g, label = "AE",
 #'             contr_indicator = TRUE, mass_indicator = TRUE,
-#'             contr_threshold = 0.01)
+#'             contr_threshold = 0.01, mass_threshold = 0.01)
 #'
 #'@import magrittr
 #'@import ggplot2
