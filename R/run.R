@@ -17,7 +17,7 @@
 #'
 #'
 #'@examples
-#'\donttest{
+#'\dontrun{
 #'library(magrittr)
 #'library(dplyr)
 #'group <- c(rep("A", 50), rep("B", 50))

@@ -39,7 +39,7 @@ for adverse event data.
 Shiny App for Correspondence Analysis of Adverse Events
 }
 \examples{
-\donttest{
+\dontrun{
 library(magrittr)
 library(dplyr)
 group <- c(rep("A", 50), rep("B", 50))
