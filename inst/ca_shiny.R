@@ -27,13 +27,13 @@ jscode <- "
 ui = function(data){
 
   if("ae_cycle" %in% colnames(data)){
-    cycle_options <- as.numeric(levels(as.factor(data$ae_cycle)))
+    cycle_options <- levels(as.factor(data$ae_cycle))
   } else {
     cycle_options <- NULL
   }
 
   if("ae_grade" %in% colnames(data)){
-    grade_options <- as.numeric(levels(as.factor(data$ae_grade)))
+    grade_options <- levels(as.factor(data$ae_grade))
   } else {
     grade_options <- NULL
   }
@@ -404,8 +404,7 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
 
-    data <- data %>% na.exclude() %>%
-      mutate(ae_grade = paste0("G", .data$ae_grade))
+    data <- data %>% na.exclude()
 
     out <- visae::ca_ae(data, group = .data$group,
                         ae_class = .data$ae_grade,
@@ -445,7 +444,7 @@ server = function(input, output, session) {
 
     data <- data %>% na.exclude() %>%
       mutate(ae_domain_grade =
-               paste0(.data$ae_domain, ": G", .data$ae_grade))
+               paste0(.data$ae_domain, ": ", .data$ae_grade))
 
     out <- visae::ca_ae(data, group = .data$group,
                         ae_class = .data$ae_domain_grade,
@@ -489,7 +488,7 @@ server = function(input, output, session) {
 
     data <- data %>% na.exclude() %>%
       mutate(ae_term_grade =
-               paste0(.data$ae_term, ": G", .data$ae_grade))
+               paste0(.data$ae_term, ": ", .data$ae_grade))
 
     out <- visae::ca_ae(data, group = .data$group,
                         ae_class = .data$ae_term_grade,
