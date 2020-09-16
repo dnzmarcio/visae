@@ -45,33 +45,49 @@
 #'@importFrom ca ca
 #'@importFrom stats addmargins
 #'@importFrom ggrepel geom_text_repel
+#'@importFrom cowplot plot_grid
+#'
 #'@export
-ca_ae <- function(data, group, ae_class, label = "AE",
+ca_ae <- function(data, id, group, ae_class, label = "AE",
                   contr_indicator = TRUE, mass_indicator = TRUE,
                   contr_threshold = NULL, mass_threshold = NULL) {
 
   temp <- enquos(group = group,
-                 ae = ae_class,
+                 ae = ae_class, id = id,
                  .ignore_empty = "all")
-  aux <- data %>% select(!!!temp)
+  #aux <- data %>% select(!!!temp)
 
-  tab <- with(aux, table(ae, group))
-  res.ca <- ca(tab)
+  aux <- data %>% select(!!!temp) %>% na.exclude() %>%
+    distinct(id, ae, .keep_all = TRUE)
+  total <- data %>% select(!!!temp) %>%
+    distinct(id, .keep_all = TRUE) %>% count(group)
+  tab <- table(aux$ae, aux$group)
+  p <- t(t(tab)/as.numeric(total$n))
+  q <- 1 - p
+  rownames(q) <- paste0(rownames(q), "_C")
+  tab.ca <- rbind(p, q)
 
-  tab_rel <- round(100*prop.table(tab, 2), 3) %>% as_tibble() %>%
+  #tab <- with(aux, table(ae, group))
+  res.ca <- ca(tab.ca)
+
+  names(dimnames(p)) <- c("ae", "group")
+  average <- round(100*rowMeans(p), 3)
+  tab_rel <- round(100*p, 3) %>% as_tibble() %>%
    pivot_wider(names_from = .data$group, values_from = .data$n) %>%
-    mutate(Average = round(100*res.ca$rowmass, 3)) %>%
-    rename(!!label := .data$ae)
+   mutate(Average = average) %>%
+   rename(!!label := .data$ae)
 
   if (is.null(contr_threshold))
     contr_threshold <- 1/nrow(tab)
   if (is.null(mass_threshold))
     mass_threshold <- 1/nrow(tab)
 
-  tab_abs <- addmargins(tab) %>% as_tibble() %>%
+  expected_threshold <- 1/nrow(tab)
+
+  names(dimnames(tab)) <- c("ae", "group")
+  tab_abs <- tab %>% as_tibble() %>%
     pivot_wider(names_from = .data$group, values_from = .data$n) %>%
-    mutate(ae = ifelse(.data$ae == "Sum", "Total", .data$ae)) %>%
-    rename(!!label := .data$ae, Total = .data$Sum)
+    rename(!!label := .data$ae)
 
   inertia <- res.ca$sv^2
   total_inertia <- sum(inertia)
@@ -83,27 +99,28 @@ ca_ae <- function(data, group, ae_class, label = "AE",
   if (ncol(tab_abs) == 4){
 
     principal.coordinates.col <-
-      tibble(dim_1 = res.ca$colcoord*res.ca$sv) %>%
+      tibble(dim_1 = res.ca$colcoord*res.ca$sv) %>% #
       mutate(labels = rownames(res.ca$colcoord),
-             type = "col", contr = 1, mass = 1)
+             type = "col", contr = 1, mass = 0.5)
 
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
     standard.coordinates.row <-
       tibble(dim_1 = aux) %>%
+      separate(labels, into = c("labels", "delete"),
+               sep = "_", fill = "right") %>%
+      filter(is.na(delete)) %>% select(-delete) %>%
       mutate(labels = rownames(res.ca$rowcoord),
              type = "row",
-             contr = aux^2,
-             mass = res.ca$rowmass) %>%
+             contr = aux[1:nrow(tab)]^2,
+             mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row %>%
-      mutate(contr = .data$contr/max(.data$contr),
-             mass = .data$mass/max(.data$mass))
+      mutate(contr = .data$contr/max(.data$contr))
 
 
-    dp <- bind_rows(principal.coordinates.col,
-                           standard.coordinates.row)
+    dp <- bind_rows(principal.coordinates.col, standard.coordinates.row)
 
     if (mass_indicator & contr_indicator){
       asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1, y = NA,
@@ -168,20 +185,20 @@ ca_ae <- function(data, group, ae_class, label = "AE",
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
     standard.coordinates.row <-
-      as_tibble(aux) %>%
-      mutate(labels = rownames(res.ca$rowcoord),
-             type = "row",
-             contr = pmax(aux[, 1]^2, aux[, 2]^2),
-             mass = res.ca$rowmass) %>%
+      as_tibble(aux, rownames = "labels") %>%
+      separate(labels, into = c("labels", "delete"),
+               sep = "_", fill = "right") %>%
+      filter(is.na(delete)) %>% select(-delete) %>%
+      mutate(type = "row",
+             contr = pmax(aux[1:nrow(tab), 1]^2, aux[1:nrow(tab), 2]^2),
+             mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row %>%
-      mutate(contr = .data$contr/max(.data$contr),
-             mass = .data$mass/max(.data$mass))
+      mutate(contr = .data$contr/max(.data$contr))
 
-    dp <- bind_rows(principal.coordinates.col,
-                    standard.coordinates.row)
+    dp <- bind_rows(principal.coordinates.col, standard.coordinates.row)
 
 
     if (mass_indicator & contr_indicator){

@@ -406,7 +406,8 @@ server = function(input, output, session) {
 
     data <- data %>% na.exclude()
 
-    out <- visae::ca_ae(data, group = .data$group,
+    out <- visae::ca_ae(data, id = .data$id,
+                        group = .data$group,
                         ae_class = .data$ae_grade,
                         label = "Grade",
                         contr_indicator = contr_indicator,
@@ -425,7 +426,8 @@ server = function(input, output, session) {
     if ("ae_grade" %in% colnames(data))
       data <- data %>% filter(.data$ae_grade %in% selected_grade)
 
-    out <- visae::ca_ae(data, group = .data$group,
+    out <- visae::ca_ae(data, id = .data$id,
+                        group = .data$group,
                         ae_class = .data$ae_domain,
                         label = "Domain",
                         contr_indicator = contr_indicator,
@@ -446,7 +448,8 @@ server = function(input, output, session) {
       mutate(ae_domain_grade =
                paste0(.data$ae_domain, ": ", .data$ae_grade))
 
-    out <- visae::ca_ae(data, group = .data$group,
+    out <- visae::ca_ae(data, id = .data$id,
+                        group = .data$group,
                         ae_class = .data$ae_domain_grade,
                         label = "Domain:Grade",
                         contr_indicator = contr_indicator,
@@ -467,7 +470,8 @@ server = function(input, output, session) {
     if ("ae_grade" %in% colnames(data))
       data <- data %>% filter(.data$ae_grade %in% selected_grade)
 
-    out <- visae::ca_ae(data, group = .data$group,
+    out <- visae::ca_ae(data, id = .data$id,
+                        group = .data$group,
                         ae_class = .data$ae_term,
                         label = "Term",
                         contr_indicator = contr_indicator,
@@ -490,7 +494,8 @@ server = function(input, output, session) {
       mutate(ae_term_grade =
                paste0(.data$ae_term, ": ", .data$ae_grade))
 
-    out <- visae::ca_ae(data, group = .data$group,
+    out <- visae::ca_ae(data, id = .data$id,
+                        group = .data$group,
                         ae_class = .data$ae_term_grade,
                         label = "Term:Grade",
                         contr_indicator = contr_indicator,

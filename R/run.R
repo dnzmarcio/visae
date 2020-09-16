@@ -41,12 +41,14 @@
 #'@importFrom stats na.exclude
 #'@export
 run_ca <- function(data,
+                   id,
                    group,
                    ae_grade = NULL,
                    ae_domain = NULL,
                    ae_term = NULL,
                    ae_cycle = NULL) {
 
+  id <- enquo(id)
   group <- enquo(group)
   ae_grade <- enquo(ae_grade)
   ae_domain <- enquo(ae_domain)
@@ -58,6 +60,7 @@ run_ca <- function(data,
          Please input either ae_grade, ae_domain or ae_term.")
 
   aux <- enquos(group = group,
+                id = id,
                 ae_grade = ae_grade,
                 ae_domain = ae_domain,
                 ae_term = ae_term,
