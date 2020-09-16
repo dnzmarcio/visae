@@ -139,41 +139,22 @@ ca_ae <- function(data, group, ae_class, label = "AE",
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         text = element_text(size = 20)) +
-      scale_x_continuous(limits = c(-1, 1))
+      scale_size_continuous(range = c(3, 6)) +
+      scale_alpha_continuous(range = c(0.3, 1))
 
-    # dp <- bind_rows(principal.coordinates.col,
-    #                 principal.coordinates.row)
-    #
-    # symetric_plot <- ggplot(dp, aes(x = dim_1, y = NA,
-    #                                 color = type))  +
-    #   geom_vline(xintercept = 0, linetype = 2) +
-    #   geom_point() +
-    #   geom_text_repel(aes(label = labels)) +
-    #   scale_colour_manual(values = c("red", "blue")) +
-    #   labs(x = paste0("Dim 1 ", "(", round(res.ca$eig[1, 2], 2), "%)")) +
-    #   theme_minimal() +
-    #   theme(
-    #     legend.position = "none",
-    #     axis.text.y = element_blank(),
-    #     axis.ticks.y = element_blank(),
-    #     axis.title.y = element_blank(),
-    #     text = element_text(size = 12))
-    #
-    # aux <- as_tibble(res.ca$row$contrib) %>%
-    #   mutate(ae = as.factor(names(res.ca$row$contrib))) %>% clean_names()
-    #
-    # dp <- aux %>%
-    #   mutate(ae = factor(ae, levels = levels(aux$ae)[order(aux$dim_1)]))
-    #
-    # contr <- list()
-    #
-    # contr$dim1 <- ggplot(dp, aes(y = dim_1, x = ae)) +
-    #   theme_minimal() +
-    #   geom_col(fill = "steelblue") +
-    #   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    #   labs(y = "Contributions (%)", x = label,
-    #        title = "Dimension 1") +
-    #   geom_hline(yintercept = 100/nrow(tab), linetype = 2) + coord_flip()
+    aux <- data.frame(ae = as.factor(rownames(res.ca$rowcoord)),
+                      dim_1 = 100*(as.numeric(res.ca$rowcoord*sqrt(res.ca$rowmass)))^2)
+    dp <- as_tibble(aux) %>% slice_max(.data$dim_1, n = 5) %>%
+      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_1)])) %>%
+      filter(.data$dim_1 > 100*contr_threshold)
+
+    contr_plot <- ggplot(dp, aes(y = .data$dim_1, x = .data$ae)) +
+      theme_minimal() +
+      geom_col(fill = "steelblue") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            text = element_text(size = 20)) +
+      labs(y = "Contributions (%)", x = label,
+           title = "Dimension 1") + coord_flip()
 
   } else {
     aux <- res.ca$colcoord*res.ca$sv
@@ -182,8 +163,7 @@ ca_ae <- function(data, group, ae_class, label = "AE",
       as_tibble(aux) %>%
       mutate(labels = rownames(res.ca$colcoord),
              type = "col",
-             contr = 1,
-             mass = 1)
+             contr = 1, mass = 0.5)
 
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
@@ -236,57 +216,45 @@ ca_ae <- function(data, group, ae_class, label = "AE",
       theme_minimal() +
       theme(legend.position = "none",
             text = element_text(size = 20))+
-      scale_x_continuous(limits = c(-1, 1)) +
-      scale_y_continuous(limits = c(-1, 1))
+      scale_size_continuous(range = c(3, 6)) +
+      scale_alpha_continuous(range = c(0.3, 1))
+
+    aux01 <- data.frame(ae = as.factor(rownames(res.ca$rowcoord)))
+    aux02 <- as.data.frame(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2)
+    colnames(aux02) <- paste0("dim_", 1:ncol(aux02))
+    aux <- bind_cols(aux01, aux02)
+
+    dp01 <- as_tibble(aux) %>% slice_max(.data$dim_1, n = 5) %>%
+      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_1)])) %>%
+      filter(.data$dim_1 > 100*contr_threshold)
+    contr_plot01 <- ggplot(dp01, aes(y = .data$dim_1, x = .data$ae)) +
+      theme_minimal() +
+      geom_col(fill = "steelblue") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            text = element_text(size = 20)) +
+      labs(y = "Contributions (%)", x = label,
+           title = "Dimension 1") + coord_flip()
+
+    dp02 <- as_tibble(aux) %>% slice_max(.data$dim_2, n = 5) %>%
+      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_2)])) %>%
+      filter(.data$dim_2 > 100*contr_threshold)
+    contr_plot02 <- ggplot(dp02, aes(y = .data$dim_2, x = .data$ae)) +
+      theme_minimal() +
+      geom_col(fill = "steelblue") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            text = element_text(size = 20)) +
+      labs(y = "Contributions (%)", x = label,
+           title = "Dimension 2") + coord_flip()
+
+    contr_plot <- cowplot::plot_grid(contr_plot01, contr_plot02, nrow = 2)
 
 
-    # dp <- bind_rows(principal.coordinates.col,
-    #                 principal.coordinates.row) %>% clean_names()
-    #
-    # symetric_plot <- ggplot(dp, aes(x = dim_1, y = dim_2,
-    #                                 color = type))  +
-    #   geom_hline(yintercept = 0, linetype = 2) +
-    #   geom_vline(xintercept = 0, linetype = 2) +
-    #   geom_point() +
-    #   geom_text_repel(aes(label = labels)) +
-    #   scale_colour_manual(values = c("red", "blue")) +
-    #   labs(x = paste0("Dim 1 ", "(", round(res.ca$eig[1, 2], 2), "%)"),
-    #        y = paste0("Dim 2 ", "(", round(res.ca$eig[2, 2], 2), "%)")) +
-    #   theme_minimal() +
-    #   theme(legend.position = "none",
-    #         text = element_text(size = 12))
-    #
-    # aux <- as_tibble(res.ca$row$contrib) %>%
-    #   mutate(ae = as.factor(rownames(res.ca$row$contrib))) %>% clean_names()
-    #
-    # dp <- aux %>%
-    #   mutate(ae = factor(ae, levels = levels(aux$ae)[order(aux$dim_1)]))
-    #
-    # contr <- list()
-    #
-    # contr$dim1 <- ggplot(dp, aes(y = dim_1, x = ae)) +
-    #   theme_minimal() +
-    #   geom_col(fill = "steelblue") +
-    #   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    #   labs(y = "Contributions (%)", x = label,
-    #        title = "Dimension 1") +
-    #   geom_hline(yintercept = 100/nrow(tab), linetype = 2) + coord_flip()
-    #
-    # dp <- aux %>%
-    #   mutate(ae = factor(ae, levels = levels(aux$ae)[order(aux$dim_2)]))
-    #
-    # contr$dim2 <- ggplot(dp, aes(y = dim_2, x = ae)) +
-    #   theme_minimal() +
-    #   geom_col(fill = "steelblue") +
-    #   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    #   labs(y = "Contributions (%)", x = label,
-    #        title = "Dimension 2") +
-    #   geom_hline(yintercept = 100/nrow(tab), linetype = 2) + coord_flip()
   }
 
   out <- list(tab_abs = tab_abs, tab_rel = tab_rel,
               total_inertia = total_inertia,
               tab_inertia = tab_inertia,
+              contr_plot = contr_plot,
               asymmetric_plot = asymmetric_plot)
 
   return(out)
