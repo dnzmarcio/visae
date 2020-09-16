@@ -67,16 +67,7 @@ ui = function(data){
                tabPanel("Grade",
                         value = "Grade",
                         sidebarLayout(
-                          sidebarPanel(h4("Trial"),
-                                       selectInput(
-                                         inputId = 'selected_cycle_grade',
-                                         label = h6('Selected Cycles'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = cycle_options,
-                                         selected = cycle_options
-                                       ),
-                                       h4("Plot"),
+                          sidebarPanel(h4("Plot"),
                                        numericInput(
                                          inputId = 'contr_threshold_grade',
                                          label = h6('Contribution Threshold'),
@@ -102,6 +93,16 @@ ui = function(data){
                                          inputId = 'mass_grade',
                                          label = h6('Mass Dot Size'),
                                          value = TRUE
+                                       ),
+                                       downloadButton('downloadplot_grade', 'Download Asymmetric Plot'),
+                                       h4("Trial"),
+                                       selectInput(
+                                         inputId = 'selected_cycle_grade',
+                                         label = h6('Selected Cycles'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = cycle_options,
+                                         selected = cycle_options
                                        )
                           ),
                           mainPanel(
@@ -120,24 +121,7 @@ ui = function(data){
                tabPanel("Domain",
                         value = "Domain",
                         sidebarLayout(
-                          sidebarPanel(h4("Trial"),
-                                       selectInput(
-                                         inputId = 'selected_cycle_domain',
-                                         label = h6('Selected Cycles'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = cycle_options,
-                                         selected = cycle_options
-                                       ),
-                                       selectInput(
-                                         inputId = 'selected_grade_domain',
-                                         label = h6('Selected Grades'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = grade_options,
-                                         selected = grade_options
-                                       ),
-                                       h4("Plot"),
+                          sidebarPanel(h4("Plot"),
                                        numericInput(
                                          inputId = 'contr_threshold_domain',
                                          label = h6('Contribution Threshold'),
@@ -163,6 +147,24 @@ ui = function(data){
                                          inputId = 'mass_domain',
                                          label = h6('Mass Dot Size'),
                                          value = TRUE
+                                       ),
+                                       downloadButton('downloadplot_domain', 'Download Asymmetric Plot'),
+                                       h4("Trial"),
+                                       selectInput(
+                                         inputId = 'selected_cycle_domain',
+                                         label = h6('Selected Cycles'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = cycle_options,
+                                         selected = cycle_options
+                                       ),
+                                       selectInput(
+                                         inputId = 'selected_grade_domain',
+                                         label = h6('Selected Grades'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = grade_options,
+                                         selected = grade_options
                                        )
                           ),
                           mainPanel(
@@ -181,16 +183,7 @@ ui = function(data){
                tabPanel("Domain and Grade",
                         value = "DomainGrade",
                         sidebarLayout(
-                          sidebarPanel(h4("Trial"),
-                                       selectInput(
-                                         inputId = 'selected_cycle_domain_grade',
-                                         label = h6('Selected Cycles'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = cycle_options,
-                                         selected = cycle_options
-                                       ),
-                                       h4("Plot"),
+                          sidebarPanel(h4("Plot"),
                                        numericInput(
                                          inputId = 'contr_threshold_domain_grade',
                                          label = h6('Contribution Threshold'),
@@ -216,6 +209,16 @@ ui = function(data){
                                          inputId = 'mass_domain_grade',
                                          label = h6('Mass Dot Size'),
                                          value = TRUE
+                                       ),
+                                       downloadButton('downloadplot_domain_grade', 'Download Asymmetric Plot'),
+                                       h4("Trial"),
+                                       selectInput(
+                                         inputId = 'selected_cycle_domain_grade',
+                                         label = h6('Selected Cycles'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = cycle_options,
+                                         selected = cycle_options
                                        )
                           ),
                           mainPanel(tabsetPanel(
@@ -233,32 +236,7 @@ ui = function(data){
                tabPanel("Term",
                         value = "Term",
                         sidebarLayout(
-                          sidebarPanel(h4("Trial"),
-                                       selectInput(
-                                         inputId = 'selected_cycle_term',
-                                         label = h6('Selected Cycles'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = cycle_options,
-                                         selected = cycle_options
-                                       ),
-                                       selectInput(
-                                         inputId = 'selected_domain_term',
-                                         label = h6('Selected Domains'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = domain_options,
-                                         selected = domain_options
-                                       ),
-                                       selectInput(
-                                         inputId = 'selected_grade_term',
-                                         label = h6('Selected Grades'),
-                                         multiple = TRUE,
-                                         selectize = TRUE,
-                                         choices = grade_options,
-                                         selected = grade_options
-                                       ),
-                                       h4("Plot"),
+                          sidebarPanel(h4("Plot"),
                                        numericInput(
                                          inputId = 'contr_threshold_term',
                                          label = h6('Contribution Threshold'),
@@ -284,21 +262,11 @@ ui = function(data){
                                          inputId = 'mass_term',
                                          label = h6('Mass Dot Size'),
                                          value = TRUE
-                                       )
-                          ),
-                          mainPanel(tabsetPanel(
-                            tabPanel("Table", DT::dataTableOutput("ae_term_table")),
-                            tabPanel("Asymmetric Plot", plotOutput("ae_term_biplot"))
-                          )
-                          )
-                        )
-               ),
-               tabPanel("Term and Grade",
-                        value = "TermGrade",
-                        sidebarLayout(
-                          sidebarPanel(h4("Trial"),
+                                       ),
+                                       downloadButton('downloadplot_term', 'Download Asymmetric Plot'),
+                                       h4("Trial"),
                                        selectInput(
-                                         inputId = 'selected_cycle_term_grade',
+                                         inputId = 'selected_cycle_term',
                                          label = h6('Selected Cycles'),
                                          multiple = TRUE,
                                          selectize = TRUE,
@@ -306,14 +274,38 @@ ui = function(data){
                                          selected = cycle_options
                                        ),
                                        selectInput(
-                                         inputId = 'selected_domain_term_grade',
+                                         inputId = 'selected_domain_term',
                                          label = h6('Selected Domains'),
                                          multiple = TRUE,
                                          selectize = TRUE,
                                          choices = domain_options,
                                          selected = domain_options
                                        ),
-                                       h4("Plot"),
+                                       selectInput(
+                                         inputId = 'selected_grade_term',
+                                         label = h6('Selected Grades'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = grade_options,
+                                         selected = grade_options
+                                       )
+                          ),
+                          mainPanel(tabsetPanel(
+                            tabPanel("Table", DT::dataTableOutput("ae_term_table")),
+                            tabPanel("Contribution Plot", plotOutput("ae_term_contr_plot",
+                                                                     height = "600px",
+                                                                     width = "600px")),
+                            tabPanel("Asymmetric Plot", plotOutput("ae_term_biplot",
+                                                                   height = "600px",
+                                                                   width = "600px"))
+                          )
+                          )
+                        )
+               ),
+               tabPanel("Term and Grade",
+                        value = "TermGrade",
+                        sidebarLayout(
+                          sidebarPanel(h4("Plot"),
                                        numericInput(
                                          inputId = 'contr_threshold_term_grade',
                                          label = h6('Contribution Threshold'),
@@ -339,6 +331,24 @@ ui = function(data){
                                          inputId = 'mass_term_grade',
                                          label = h6('Mass Dot Size'),
                                          value = TRUE
+                                       ),
+                                       downloadButton('downloadplot_term_grade', 'Download Asymmetric Plot'),
+                                       h4("Trial"),
+                                       selectInput(
+                                         inputId = 'selected_cycle_term_grade',
+                                         label = h6('Selected Cycles'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = cycle_options,
+                                         selected = cycle_options
+                                       ),
+                                       selectInput(
+                                         inputId = 'selected_domain_term_grade',
+                                         label = h6('Selected Domains'),
+                                         multiple = TRUE,
+                                         selectize = TRUE,
+                                         choices = domain_options,
+                                         selected = domain_options
                                        )
                           ),
                           mainPanel(tabsetPanel(
