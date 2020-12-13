@@ -79,8 +79,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   average <- round(100*rowMeans(p), 3)
   tab_rel <- round(100*p, 3) %>% as_tibble() %>%
    pivot_wider(names_from = .data$group, values_from = .data$n) %>%
-   mutate(Average = average) %>%
-   rename(!!label := .data$ae)
+   mutate(Average = average)
 
   if (is.null(contr_threshold))
     contr_threshold <- 1/nrow(tab)
@@ -91,8 +90,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
   names(dimnames(tab)) <- c("ae", "group")
   tab_abs <- tab %>% as_tibble() %>%
-    pivot_wider(names_from = .data$group, values_from = .data$n) %>%
-    rename(!!label := .data$ae)
+    pivot_wider(names_from = .data$group, values_from = .data$n)
 
   inertia <- res.ca$sv^2
   total_inertia <- sum(inertia)
@@ -119,6 +117,9 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
              contr = aux[1:nrow(tab)]^2,
              mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
+    colnames(standard.coordinates.row)[2] <- "dim_1"
+
+    selected_classes <- as.character(standard.coordinates.row$labels)
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row %>%
