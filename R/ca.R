@@ -99,22 +99,31 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
                        Inertia = inertia,
                        'Explained Variance' = explained_var)
 
-  if (ncol(tab_abs) == 4){
+  if (ncol(tab_abs) < 4){
 
     principal.coordinates.col <-
-      tibble(dim_1 = res.ca$colcoord*res.ca$sv) %>% #
+      tibble(dim_1 = as.numeric(res.ca$colcoord*res.ca$sv)) %>% #
       mutate(labels = rownames(res.ca$colcoord),
              type = "col", contr = 1, mass = 0.5)
 
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
+
+    contr <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
+    tab_contr <- as_tibble(contr, rownames = "labels") %>%
+      separate(labels, into = c("ae", "delete"),
+               sep = "_", fill = "right") %>%
+      group_by(ae) %>%
+      summarise(across(starts_with("Dim"), sum, .names = "{col}"),
+                .groups = "drop_last")
+    colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
+
     standard.coordinates.row <-
-      tibble(dim_1 = aux) %>%
+      as_tibble(aux, rownames = "labels") %>%
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") %>%
       filter(is.na(delete)) %>% select(-delete) %>%
-      mutate(labels = rownames(res.ca$rowcoord),
-             type = "row",
-             contr = aux[1:nrow(tab)]^2,
+      mutate(type = "row",
+             contr = tab_contr[[2]]/100,
              mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     colnames(standard.coordinates.row)[2] <- "dim_1"
