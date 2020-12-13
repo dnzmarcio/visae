@@ -95,6 +95,7 @@ ui = function(data){
                                          value = TRUE
                                        ),
                                        downloadButton('downloadplot_grade', 'Download Asymmetric Plot'),
+                                       downloadButton('downloadfreq_grade', 'Download Frequency Table'),
                                        h4("Trial"),
                                        selectInput(
                                          inputId = 'selected_cycle_grade',
@@ -147,6 +148,7 @@ ui = function(data){
                                          value = TRUE
                                        ),
                                        downloadButton('downloadplot_domain', 'Download Asymmetric Plot'),
+                                       downloadButton('downloadfreq_domain', 'Download Frequency Table'),
                                        h4("Trial"),
                                        selectInput(
                                          inputId = 'selected_cycle_domain',
@@ -206,6 +208,7 @@ ui = function(data){
                                          value = TRUE
                                        ),
                                        downloadButton('downloadplot_domain_grade', 'Download Asymmetric Plot'),
+                                       downloadButton('downloadfreq_domain_grade', 'Download Frequency Table'),
                                        h4("Trial"),
                                        selectInput(
                                          inputId = 'selected_cycle_domain_grade',
@@ -257,6 +260,7 @@ ui = function(data){
                                          value = TRUE
                                        ),
                                        downloadButton('downloadplot_term', 'Download Asymmetric Plot'),
+                                       downloadButton('downloadfreq_term', 'Download Frequency Table'),
                                        h4("Trial"),
                                        selectInput(
                                          inputId = 'selected_cycle_term',
@@ -324,6 +328,7 @@ ui = function(data){
                                          value = TRUE
                                        ),
                                        downloadButton('downloadplot_term_grade', 'Download Asymmetric Plot'),
+                                       downloadButton('downloadfreq_term_grade', 'Download Frequency Table'),
                                        h4("Trial"),
                                        selectInput(
                                          inputId = 'selected_cycle_term_grade',
@@ -496,15 +501,16 @@ server = function(input, output, session) {
 
   if('ae_grade' %in% colnames(data)){
 
-    output$ae_grade_table <- DT::renderDataTable(
-      shiny_grade(data,
-                  selected_cycle = input$selected_cycle_grade,
-                  contr_indicator = input$contr_grade,
-                  mass_indicator = input$mass_grade,
-                  contr_threshold = input$contr_threshold_grade/100,
-                  mass_threshold = input$mass_threshold_grade/100)$tab_rel,
-      rownames = FALSE
-    )
+    tabInput_grade <- reactive({
+      tab <- shiny_grade(data,
+                          selected_cycle = input$selected_cycle_grade,
+                          contr_indicator = input$contr_grade,
+                          mass_indicator = input$mass_grade,
+                          contr_threshold = input$contr_threshold_grade/100,
+                          mass_threshold = input$mass_threshold_grade/100)$tab_rel
+    })
+
+    output$ae_grade_table <- DT::renderDT({tabInput_grade()}, escape = FALSE)
 
     plotInput_grade <- reactive({
       gp <- shiny_grade(data,
@@ -534,20 +540,29 @@ server = function(input, output, session) {
                 height = 7, width = 7)
       }
     )
+
+    output$downloadfreq_grade <- downloadHandler(
+      filename = function() { paste('ca_grade.csv', sep='') },
+      content = function(file) {
+        write.csv(x = tabInput_grade(), file = file)
+      }
+    )
   }
 
   if('ae_domain' %in% colnames(data)){
     shinyjs::js$enabletabD("Domain")
 
-    output$ae_domain_table <- DT::renderDataTable(
-      shiny_domain(data,
-                   selected_cycle = input$selected_cycle_domain,
-                   selected_grade = input$selected_grade_domain,
-                   contr_indicator = input$contr_domain,
-                   mass_indicator = input$mass_domain,
-                   contr_threshold = input$contr_threshold_domain/100,
-                   mass_threshold = input$mass_threshold_domain/100)$tab_rel
-      )
+    tabInput_domain <- reactive({
+      tab <- shiny_domain(data,
+                        selected_cycle = input$selected_cycle_domain,
+                        selected_grade = input$selected_grade_domain,
+                        contr_indicator = input$contr_domain,
+                        mass_indicator = input$mass_domain,
+                        contr_threshold = input$contr_threshold_domain/100,
+                        mass_threshold = input$mass_threshold_domain/100)$tab_rel
+    })
+
+    output$ae_domain_table <- DT::renderDT({tabInput_domain()}, escape = FALSE)
 
     plotInput_domain <- reactive({
       gp <- shiny_domain(data,
@@ -579,6 +594,13 @@ server = function(input, output, session) {
       }
     )
 
+    output$downloadfreq_domain <- downloadHandler(
+      filename = function() { paste('ca_domain.csv', sep='') },
+      content = function(file) {
+        write.csv(tabInput_domain(), file = file)
+      }
+    )
+
   } else {
     shinyjs::js$disabletabD("Domain")
   }
@@ -586,15 +608,16 @@ server = function(input, output, session) {
   if('ae_domain' %in% colnames(data) & 'ae_grade' %in% colnames(data)){
     shinyjs::js$enabletabD("DomainGrade")
 
-    output$ae_domain_grade_table <- DT::renderDataTable(
-      shiny_domain_grade(data,
-                         selected_cycle =
-                           input$selected_cycle_domain_grade,
-                         contr_indicator = input$contr_domain_grade,
-                         mass_indicator = input$mass_domain_grade,
-                         contr_threshold = input$contr_threshold_domain_grade/100,
-                         mass_threshold = input$mass_threshold_domain_grade/100)$tab_rel
-      )
+    tabInput_domain_grade <- reactive({
+      tab <- shiny_domain_grade(data,
+                          selected_cycle = input$selected_cycle_domain_grade,
+                          contr_indicator = input$contr_domain_grade,
+                          mass_indicator = input$mass_domain_grade,
+                          contr_threshold = input$contr_threshold_domain_grade/100,
+                          mass_threshold = input$mass_threshold_domain_grade/100)$tab_rel
+    })
+
+    output$ae_domain_grade_table <- DT::renderDT({tabInput_domain_grade()}, escape = FALSE)
 
     plotInput_domain_grade <- reactive({
       gp <- shiny_domain_grade(data,
@@ -627,6 +650,13 @@ server = function(input, output, session) {
       }
     )
 
+    output$downloadfreq_domain_grade <- downloadHandler(
+      filename = function() { paste('ca_domain_grade.csv', sep='') },
+      content = function(file) {
+        write.csv(tabInput_domain_grade(), file = file)
+      }
+    )
+
   } else {
     shinyjs::js$disabletabD("DomainGrade")
   }
@@ -634,8 +664,8 @@ server = function(input, output, session) {
   if('ae_term' %in% colnames(data)){#If true enable, else disable
     shinyjs::js$enabletabT("Term")
 
-    output$ae_term_table <- DT::renderDataTable(
-      shiny_term(data,
+     tabInput_term <- reactive({
+      tab <- shiny_term(data,
                  selected_cycle = input$selected_cycle_term,
                  selected_domain = input$selected_domain_term,
                  selected_grade = input$selected_grade_term,
@@ -643,7 +673,9 @@ server = function(input, output, session) {
                  mass_indicator = input$mass_term,
                  contr_threshold = input$contr_threshold_term/100,
                  mass_threshold = input$mass_threshold_term/100)$tab_rel
-    )
+    })
+
+    output$ae_term_table <- DT::renderDT({tabInput_term()}, escape = FALSE)
 
     plotInput_term <- reactive({
       gp <- shiny_term(data,
@@ -677,6 +709,13 @@ server = function(input, output, session) {
       }
     )
 
+    output$downloadfreq_term <- downloadHandler(
+      filename = function() { paste('ca_term.csv', sep='') },
+      content = function(file) {
+        write.csv(tabInput_term(), file = file)
+      }
+    )
+
   } else {
     shinyjs::js$disabletabT("Term")
   }
@@ -684,7 +723,8 @@ server = function(input, output, session) {
   if('ae_term' %in% colnames(data) & 'ae_grade' %in% colnames(data)){#If true enable, else disable
     shinyjs::js$enabletabT("TermGrade")
 
-    output$ae_term_grade_table <- DT::renderDataTable(
+
+    tabInput_term_grade <- reactive({
       shiny_term_grade(data,
                        selected_cycle = input$selected_cycle_term_grade,
                        selected_domain = input$selected_domain_term_grade,
@@ -692,7 +732,9 @@ server = function(input, output, session) {
                        mass_indicator = input$mass_term_grade,
                        contr_threshold = input$contr_threshold_term_grade/100,
                        mass_threshold = input$mass_threshold_term_grade/100)$tab_rel
-    )
+    })
+
+    output$ae_term_grade_table <- DT::renderDT({tabInput_term_grade()}, escape = FALSE)
 
     plotInput_term_grade <- reactive({gp <- shiny_term_grade(data,
                                                   selected_cycle = input$selected_cycle_term_grade,
@@ -720,6 +762,12 @@ server = function(input, output, session) {
       content = function(file) {
         ggsave(file, plot = plotInput_term_grade(), device = "pdf",
                 height = 7, width = 7)
+      }
+    )
+    output$downloadfreq_term_grade <- downloadHandler(
+      filename = function() { paste('ca_term_grade.csv', sep='') },
+      content = function(file) {
+        write.csv(tabInput_term_grade(), file = file)
       }
     )
 
