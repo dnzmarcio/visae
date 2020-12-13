@@ -1,5 +1,7 @@
 #'Correspondence Analysis of Adverse Events
 #'@param data data.frame or tibble object.
+#'@param id unquoted expression indicating the
+#'variable name in \code{data} that corresponds to the id variable.
 #'@param group unquoted expression indicating the
 #'variable name in \code{data} that corresponds to the group variable.
 #'@param ae_class unquoted expression indicating the
@@ -27,13 +29,15 @@
 #'@examples
 #'library(magrittr)
 #'library(dplyr)
+#'
+#'id <- rep(1:50, each = 2)
 #'group <- c(rep("A", 50), rep("B", 50))
 #'ae_grade <- sample(1:5, size = 100, replace = TRUE)
 #'ae_domain <- sample(c("D", "E"), size = 100, replace = TRUE)
 #'ae_term <- sample(c("F", "G", "H", "I"), size = 100, replace = TRUE)
-#'dt <- tibble(trt = group,
+#'dt <- tibble(id = id, trt = group,
 #'             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
-#'dt %>% ca_ae(., group = trt, ae = ae_g, label = "AE",
+#'dt %>% ca_ae(., id = id, group = trt, ae = ae_g, label = "AE",
 #'             contr_indicator = TRUE, mass_indicator = TRUE,
 #'             contr_threshold = 0.01, mass_threshold = 0.01)
 #'
@@ -66,6 +70,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   q <- 1 - p
   rownames(q) <- paste0(rownames(q), "_C")
   tab.ca <- rbind(p, q)
+  # tab.ca <- p
 
   #tab <- with(aux, table(ae, group))
   res.ca <- ca(tab.ca)

@@ -6,6 +6,7 @@
 \usage{
 ca_ae(
   data,
+  id,
   group,
   ae_class,
   label = "AE",
@@ -17,6 +18,9 @@ ca_ae(
 }
 \arguments{
 \item{data}{data.frame or tibble object.}
+
+\item{id}{unquoted expression indicating the
+variable name in \code{data} that corresponds to the id variable.}
 
 \item{group}{unquoted expression indicating the
 variable name in \code{data} that corresponds to the group variable.}
@@ -53,13 +57,15 @@ Correspondence Analysis of Adverse Events
 \examples{
 library(magrittr)
 library(dplyr)
+
+id <- rep(1:50, each = 2)
 group <- c(rep("A", 50), rep("B", 50))
 ae_grade <- sample(1:5, size = 100, replace = TRUE)
 ae_domain <- sample(c("D", "E"), size = 100, replace = TRUE)
 ae_term <- sample(c("F", "G", "H", "I"), size = 100, replace = TRUE)
-dt <- tibble(trt = group,
+dt <- tibble(id = id, trt = group,
             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
-dt \%>\% ca_ae(., group = trt, ae = ae_g, label = "AE",
+dt \%>\% ca_ae(., id = id, group = trt, ae = ae_g, label = "AE",
             contr_indicator = TRUE, mass_indicator = TRUE,
             contr_threshold = 0.01, mass_threshold = 0.01)
 
