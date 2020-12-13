@@ -376,15 +376,18 @@ ui = function(data){
                                               href="https://www.cancer.gov/research/key-initiatives/moonshot-cancer-initiative"),
                                             " - Grant Number: 1U01CA232859-01")
 
-                                   ),
-                                   tabPanel("Correspondence Analysis", )
+                                   )
                           )
                         )
                         )
                ),
 
                shinyjs::useShinyjs(),
-               shinyjs::extendShinyjs(text = jscode)
+               shinyjs::extendShinyjs(text = jscode,
+                                      functions = c("disabletabD",
+                                                    "enabletabD",
+                                                    "disabletabT",
+                                                    "enabletabT"))
     )
   )
 }
