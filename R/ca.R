@@ -45,7 +45,7 @@
 #'@import ggplot2
 #'@import dplyr
 #'@importFrom rlang .data enquos :=
-#'@importFrom tidyr pivot_wider
+#'@importFrom tidyr pivot_wider separate
 #'@importFrom ca ca
 #'@importFrom stats addmargins
 #'@importFrom ggrepel geom_text_repel
@@ -164,19 +164,13 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_size_continuous(range = c(3, 6)) +
       scale_alpha_continuous(range = c(0.3, 1))
 
-    aux <- data.frame(ae = as.factor(rownames(res.ca$rowcoord)),
-                      dim_1 = 100*(as.numeric(res.ca$rowcoord*sqrt(res.ca$rowmass)))^2)
-    dp <- as_tibble(aux) %>% slice_max(.data$dim_1, n = 5) %>%
-      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_1)])) %>%
-      filter(.data$dim_1 > 100*contr_threshold)
-
-    contr_plot <- ggplot(dp, aes(y = .data$dim_1, x = .data$ae)) +
-      theme_minimal() +
-      geom_col(fill = "steelblue") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            text = element_text(size = 20)) +
-      labs(y = "Contributions (%)", x = label,
-           title = "Dimension 1") + coord_flip()
+    temp <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
+    tab_contr <- as_tibble(temp, rownames = "ae") %>%
+      separate(ae, into = c("ae", "delete"),
+               sep = "_", fill = "right") %>%
+      group_by(ae) %>%
+      summarize(across(starts_with("Dim"), sum, .names = "{col}"))
+    colnames(tab_contr)[-1] <- "Dim 1"
 
   } else {
     aux <- res.ca$colcoord*res.ca$sv
@@ -189,15 +183,26 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
+
+    contr <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
+    tab_contr <- as_tibble(contr, rownames = "labels") %>%
+      separate(labels, into = c("ae", "delete"),
+               sep = "_", fill = "right") %>%
+      group_by(ae) %>%
+      summarise(across(starts_with("Dim"), sum, .names = "{col}"),
+                .groups = "drop_last")
+    colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
+
     standard.coordinates.row <-
       as_tibble(aux, rownames = "labels") %>%
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") %>%
       filter(is.na(delete)) %>% select(-delete) %>%
       mutate(type = "row",
-             contr = pmax(aux[1:nrow(tab), 1]^2, aux[1:nrow(tab), 2]^2),
+             contr = pmax(tab_contr[[2]]/100, tab_contr[[3]]/100),
              mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
+    selected_classes <- as.character(standard.coordinates.row$labels)
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row %>%
@@ -240,43 +245,20 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
             text = element_text(size = 20))+
       scale_size_continuous(range = c(3, 6)) +
       scale_alpha_continuous(range = c(0.3, 1))
-
-    aux01 <- data.frame(ae = as.factor(rownames(res.ca$rowcoord)))
-    aux02 <- as.data.frame(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2)
-    colnames(aux02) <- paste0("dim_", 1:ncol(aux02))
-    aux <- bind_cols(aux01, aux02)
-
-    dp01 <- as_tibble(aux) %>% slice_max(.data$dim_1, n = 5) %>%
-      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_1)])) %>%
-      filter(.data$dim_1 > 100*contr_threshold)
-    contr_plot01 <- ggplot(dp01, aes(y = .data$dim_1, x = .data$ae)) +
-      theme_minimal() +
-      geom_col(fill = "steelblue") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            text = element_text(size = 20)) +
-      labs(y = "Contributions (%)", x = label,
-           title = "Dimension 1") + coord_flip()
-
-    dp02 <- as_tibble(aux) %>% slice_max(.data$dim_2, n = 5) %>%
-      mutate(ae = factor(.data$ae, levels = levels(aux$ae)[order(aux$dim_2)])) %>%
-      filter(.data$dim_2 > 100*contr_threshold)
-    contr_plot02 <- ggplot(dp02, aes(y = .data$dim_2, x = .data$ae)) +
-      theme_minimal() +
-      geom_col(fill = "steelblue") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            text = element_text(size = 20)) +
-      labs(y = "Contributions (%)", x = label,
-           title = "Dimension 2") + coord_flip()
-
-    contr_plot <- cowplot::plot_grid(contr_plot01, contr_plot02, nrow = 2)
-
-
   }
+
+  tab_rel <- tab_rel %>% filter(ae %in% selected_classes) %>%
+    rename(!!label := .data$ae) %>%
+    mutate(across(where(is.numeric), ~ format(.x, digits = 2, nsmall = 2)))
+  colnames(tab_rel)[-c(1, ncol(tab_rel))] <-
+    paste0(colnames(tab_rel)[-c(1, ncol(tab_rel))], "<br> (n = ", total$n, ")")
+  tab_contr  <- tab_contr %>% filter(ae %in% selected_classes) %>%
+    rename(!!label := .data$ae)
 
   out <- list(tab_abs = tab_abs, tab_rel = tab_rel,
               total_inertia = total_inertia,
               tab_inertia = tab_inertia,
-              contr_plot = contr_plot,
+              tab_contr = tab_contr,
               asymmetric_plot = asymmetric_plot)
 
   return(out)

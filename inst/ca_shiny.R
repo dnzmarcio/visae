@@ -107,13 +107,11 @@ ui = function(data){
                           ),
                           mainPanel(
                             tabsetPanel(
-                              tabPanel("Table", DT::dataTableOutput("ae_grade_table")),
-                              tabPanel("Contribution Plot", plotOutput("ae_grade_contr_plot",
-                                                                       height = "600px",
-                                                                       width = "600px")),
                               tabPanel("Asymmetric Plot", plotOutput("ae_grade_biplot",
                                                                      height = "600px",
-                                                                     width = "600px"))
+                                                                     width = "600px")),
+                              tabPanel("Frequency Table", DT::dataTableOutput("ae_grade_table")),
+                              tabPanel("Contribution Table", DT::dataTableOutput("ae_grade_contr_table"))
                             )
                           )
                         )
@@ -168,14 +166,11 @@ ui = function(data){
                                        )
                           ),
                           mainPanel(
-                            tabsetPanel(
-                              tabPanel("Table", DT::dataTableOutput("ae_domain_table")),
-                              tabPanel("Contribution Plot", plotOutput("ae_domain_contr_plot",
-                                                                       height = "600px",
-                                                                       width = "600px")),
-                              tabPanel("Asymmetric Plot", plotOutput("ae_domain_biplot",
-                                                                     height = "600px",
-                                                                     width = "600px"))
+                            tabsetPanel(tabPanel("Asymmetric Plot", plotOutput("ae_domain_biplot",
+                                                                               height = "600px",
+                                                                               width = "600px")),
+                              tabPanel("Frequency Table", DT::dataTableOutput("ae_domain_table")),
+                              tabPanel("Contribution Table", DT::dataTableOutput("ae_domain_contr_table"))
                             )
                           )
                         )
@@ -222,13 +217,11 @@ ui = function(data){
                                        )
                           ),
                           mainPanel(tabsetPanel(
-                            tabPanel("Table", DT::dataTableOutput("ae_domain_grade_table")),
-                            tabPanel("Contribution Plot", plotOutput("ae_domain_grade_contr_plot",
-                                                                     height = "600px",
-                                                                     width = "600px")),
                             tabPanel("Asymmetric Plot", plotOutput("ae_domain_grade_biplot",
                                                                    height = "600px",
-                                                                   width = "600px"))
+                                                                   width = "600px")),
+                            tabPanel("Frequency Table", DT::dataTableOutput("ae_domain_grade_table")),
+                            tabPanel("Contribution Table", DT::dataTableOutput("ae_domain_grade_contr_table"))
                           )
                           )
                         )
@@ -291,13 +284,11 @@ ui = function(data){
                                        )
                           ),
                           mainPanel(tabsetPanel(
-                            tabPanel("Table", DT::dataTableOutput("ae_term_table")),
-                            tabPanel("Contribution Plot", plotOutput("ae_term_contr_plot",
-                                                                     height = "600px",
-                                                                     width = "600px")),
                             tabPanel("Asymmetric Plot", plotOutput("ae_term_biplot",
                                                                    height = "600px",
-                                                                   width = "600px"))
+                                                                   width = "600px")),
+                            tabPanel("Frequency Table", DT::dataTableOutput("ae_term_table")),
+                            tabPanel("Contribution Table", DT::dataTableOutput("ae_term_contr_table"))
                           )
                           )
                         )
@@ -352,13 +343,11 @@ ui = function(data){
                                        )
                           ),
                           mainPanel(tabsetPanel(
-                            tabPanel("Table", DT::dataTableOutput("ae_term_grade_table")),
-                            tabPanel("Contribution Plot", plotOutput("ae_term_grade_contr_plot",
-                                                                     height = "600px",
-                                                                     width = "600px")),
                             tabPanel("Asymmetric Plot", plotOutput("ae_term_grade_biplot",
                                                                    height = "600px",
-                                                                   width = "600px"))
+                                                                   width = "600px")),
+                            tabPanel("Frequency Table", DT::dataTableOutput("ae_term_grade_table")),
+                            tabPanel("Contribution Table", DT::dataTableOutput("ae_term_grade_contr_table"))
                           )
                           )
                         )
@@ -529,13 +518,13 @@ server = function(input, output, session) {
     output$ae_grade_biplot  <- renderPlot({print(plotInput_grade())})
 
 
-    output$ae_grade_contr_plot <- renderPlot(
+    output$ae_grade_contr_table <- DT::renderDataTable(
       shiny_grade(data,
                   selected_cycle = input$selected_cycle_grade,
                   contr_indicator = input$contr_grade,
                   mass_indicator = input$mass_grade,
                   contr_threshold = input$contr_threshold_grade/100,
-                  mass_threshold = input$mass_threshold_grade/100)$contr_plot
+                  mass_threshold = input$mass_threshold_grade/100)$tab_contr
     )
 
     output$downloadplot_grade <- downloadHandler(
@@ -572,14 +561,14 @@ server = function(input, output, session) {
 
     output$ae_domain_biplot <- renderPlot({print(plotInput_domain())})
 
-    output$ae_domain_contr_plot <- renderPlot(
+    output$ae_domain_contr_table <- DT::renderDataTable(
       shiny_domain(data,
                    selected_cycle = input$selected_cycle_domain,
                    selected_grade = input$selected_grade_domain,
                    contr_indicator = input$contr_domain,
                    mass_indicator = input$mass_domain,
                    contr_threshold = input$contr_threshold_domain/100,
-                   mass_threshold = input$mass_threshold_domain/100)$contr_plot
+                   mass_threshold = input$mass_threshold_domain/100)$tab_contr
     )
 
     output$downloadplot_domain <- downloadHandler(
@@ -620,14 +609,14 @@ server = function(input, output, session) {
 
     output$ae_domain_grade_biplot <- renderPlot({print(plotInput_domain_grade())})
 
-    output$ae_domain_grade_contr_plot <- renderPlot(
+    output$ae_domain_grade_contr_table <- DT::renderDataTable(
       shiny_domain_grade(data,
                          selected_cycle =
                            input$selected_cycle_domain_grade,
                          contr_indicator = input$contr_domain_grade,
                          mass_indicator = input$mass_domain_grade,
                          contr_threshold = input$contr_threshold_domain_grade/100,
-                         mass_threshold = input$mass_threshold_domain_grade/100)$contr_plot
+                         mass_threshold = input$mass_threshold_domain_grade/100)$tab_contr
     )
 
     output$downloadplot_domain_grade <- downloadHandler(
@@ -669,7 +658,7 @@ server = function(input, output, session) {
 
     output$ae_term_biplot  <- renderPlot({print(plotInput_term())})
 
-    output$ae_term_contr_plot <- renderPlot(
+    output$ae_term_contr_table <- DT::renderDataTable(
       shiny_term(data,
                  selected_cycle = input$selected_cycle_term,
                  selected_domain = input$selected_domain_term,
@@ -677,7 +666,7 @@ server = function(input, output, session) {
                  contr_indicator = input$contr_term,
                  mass_indicator = input$mass_term,
                  contr_threshold = input$contr_threshold_term/100,
-                 mass_threshold = input$mass_threshold_term/100)$contr_plot
+                 mass_threshold = input$mass_threshold_term/100)$tab_contr
     )
 
     output$downloadplot_term <- downloadHandler(
@@ -716,14 +705,14 @@ server = function(input, output, session) {
 
     output$ae_term_grade_biplot <- renderPlot({print(plotInput_term_grade())})
 
-    output$ae_term_grade_contr_plot <- renderPlot(
+    output$ae_term_grade_contr_table <- DT::renderDataTable(
       shiny_term_grade(data,
                        selected_cycle = input$selected_cycle_term_grade,
                        selected_domain = input$selected_domain_term_grade,
                        contr_indicator = input$contr_term_grade,
                        mass_indicator = input$mass_term_grade,
                        contr_threshold = input$contr_threshold_term_grade/100,
-                       mass_threshold = input$mass_threshold_term_grade/100)$contr_plot
+                       mass_threshold = input$mass_threshold_term_grade/100)$tab_contr
     )
 
     output$downloadplot_term_grade <- downloadHandler(
