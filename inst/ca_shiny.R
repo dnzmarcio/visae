@@ -398,8 +398,6 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
 
-    data <- data %>% na.exclude()
-
     out <- visae::ca_ae(data, id = .data$id,
                         group = .data$group,
                         ae_class = .data$ae_grade,
@@ -418,7 +416,7 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
     if ("ae_grade" %in% colnames(data))
-      data <- data %>% filter(.data$ae_grade %in% selected_grade)
+      data <- data %>% filter(.data$ae_grade %in% c(selected_grade, NA))
 
     out <- visae::ca_ae(data, id = .data$id,
                         group = .data$group,
@@ -438,9 +436,11 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
 
-    data <- data %>% na.exclude() %>%
-      mutate(ae_domain_grade =
-               paste0(.data$ae_domain, ": ", .data$ae_grade))
+    data <- data %>%
+      mutate(ae_domain_grade = ifelse(!is.na(.data$ae_domain) &
+                                        !is.na(.data$ae_grade),
+                                      paste0(.data$ae_domain, ": ", .data$ae_grade),
+                                             NA))
 
     out <- visae::ca_ae(data, id = .data$id,
                         group = .data$group,
@@ -460,9 +460,9 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
     if ("ae_domain" %in% colnames(data))
-      data <- data %>% filter(.data$ae_domain %in% selected_domain)
+      data <- data %>% filter(.data$ae_domain %in% c(selected_domain, NA))
     if ("ae_grade" %in% colnames(data))
-      data <- data %>% filter(.data$ae_grade %in% selected_grade)
+      data <- data %>% filter(.data$ae_grade %in% c(selected_grade, NA))
 
     out <- visae::ca_ae(data, id = .data$id,
                         group = .data$group,
@@ -482,11 +482,13 @@ server = function(input, output, session) {
     if ("ae_cycle" %in% colnames(data))
       data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
     if ("ae_domain" %in% colnames(data))
-      data <- data %>% filter(.data$ae_domain %in% selected_domain)
+      data <- data %>% filter(.data$ae_domain %in% c(selected_domain, NA))
 
-    data <- data %>% na.exclude() %>%
-      mutate(ae_term_grade =
-               paste0(.data$ae_term, ": ", .data$ae_grade))
+    data <- data %>%
+      mutate(ae_term_grade = ifelse(!is.na(.data$ae_term) &
+                                        !is.na(.data$ae_grade),
+                                      paste0(.data$ae_term, ": ", .data$ae_grade),
+                                      NA))
 
     out <- visae::ca_ae(data, id = .data$id,
                         group = .data$group,
