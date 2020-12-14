@@ -35,11 +35,11 @@
 #'ae_grade <- sample(1:5, size = 100, replace = TRUE)
 #'ae_domain <- sample(c("D", "E"), size = 100, replace = TRUE)
 #'ae_term <- sample(c("F", "G", "H", "I"), size = 100, replace = TRUE)
-#'dt <- tibble(id = id, trt = group,
+#'df <- tibble(id = id, trt = group,
 #'             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
-#'dt %>% ca_ae(., id = id, group = trt, ae = ae_g, label = "AE",
-#'             contr_indicator = TRUE, mass_indicator = TRUE,
-#'             contr_threshold = 0.01, mass_threshold = 0.01)
+#'test <- df %>% ca_ae(., id = id, group = trt, ae = ae_g, label = "AE",
+#'                     contr_indicator = TRUE, mass_indicator = TRUE,
+#'                     contr_threshold = 0.01, mass_threshold = 0.01)
 #'
 #'@import magrittr
 #'@import ggplot2
@@ -49,7 +49,6 @@
 #'@importFrom ca ca
 #'@importFrom stats addmargins
 #'@importFrom ggrepel geom_text_repel
-#'@importFrom cowplot plot_grid
 #'
 #'@export
 ca_ae <- function(data, id, group, ae_class, label = "AE",

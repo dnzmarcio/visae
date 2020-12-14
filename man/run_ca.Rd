@@ -17,6 +17,9 @@ run_ca(
 \arguments{
 \item{data}{data.frame or tibble object.}
 
+\item{id}{unquoted expression indicating the
+variable name in \code{data} that corresponds to the id variable.}
+
 \item{group}{unquoted expression indicating the
 variable name in \code{data} that corresponds to the group variable.}
 
