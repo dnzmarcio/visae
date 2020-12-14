@@ -62,7 +62,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   #aux <- data %>% select(!!!temp)
 
   aux <- data %>% select(!!!temp) %>% na.exclude() %>%
-    distinct(id, ae, .keep_all = TRUE)
+    distinct(id, .data$ae, .keep_all = TRUE)
   total <- data %>% select(!!!temp) %>%
     distinct(id, .keep_all = TRUE) %>% count(group)
   tab <- table(aux$ae, aux$group)
@@ -112,7 +112,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     tab_contr <- as_tibble(contr, rownames = "labels") %>%
       separate(labels, into = c("ae", "delete"),
                sep = "_", fill = "right") %>%
-      group_by(ae) %>%
+      group_by(.data$ae) %>%
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
@@ -121,7 +121,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") %>%
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") %>%
-      filter(is.na(delete)) %>% select(-delete) %>%
+      filter(is.na(.data$delete)) %>% select(-.data$delete) %>%
       mutate(type = "row",
              contr = tab_contr[[2]]/100,
              mass = average/100) %>%
@@ -176,9 +176,9 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
     temp <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
     tab_contr <- as_tibble(temp, rownames = "ae") %>%
-      separate(ae, into = c("ae", "delete"),
+      separate(.data$ae, into = c("ae", "delete"),
                sep = "_", fill = "right") %>%
-      group_by(ae) %>%
+      group_by(.data$ae) %>%
       summarize(across(starts_with("Dim"), sum, .names = "{col}"))
     colnames(tab_contr)[-1] <- "Dim 1"
 
@@ -198,7 +198,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     tab_contr <- as_tibble(contr, rownames = "labels") %>%
       separate(labels, into = c("ae", "delete"),
                sep = "_", fill = "right") %>%
-      group_by(ae) %>%
+      group_by(.data$ae) %>%
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
@@ -207,7 +207,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") %>%
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") %>%
-      filter(is.na(delete)) %>% select(-delete) %>%
+      filter(is.na(.data$delete)) %>% select(-.data$delete) %>%
       mutate(type = "row",
              contr = pmax(tab_contr[[2]]/100, tab_contr[[3]]/100),
              mass = average/100) %>%
@@ -257,12 +257,12 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_alpha_continuous(range = c(0.3, 1))
   }
 
-  tab_rel <- tab_rel %>% filter(ae %in% selected_classes) %>%
+  tab_rel <- tab_rel %>% filter(.data$ae %in% selected_classes) %>%
     rename(!!label := .data$ae) %>%
     mutate(across(where(is.numeric), ~ format(.x, digits = 2, nsmall = 2)))
   colnames(tab_rel)[-c(1, ncol(tab_rel))] <-
     paste0(colnames(tab_rel)[-c(1, ncol(tab_rel))], "<br> (n = ", total$n, ")")
-  tab_contr  <- tab_contr %>% filter(ae %in% selected_classes) %>%
+  tab_contr  <- tab_contr %>% filter(.data$ae %in% selected_classes) %>%
     rename(!!label := .data$ae)
 
   out <- list(tab_abs = tab_abs, tab_rel = tab_rel,
