@@ -1,6 +1,8 @@
 #'Shiny App for Correspondence Analysis of Adverse Events
 #'
 #'@param data data.frame or tibble object.
+#'@param id unquoted expression indicating the
+#'variable name in \code{data} that corresponds to the id variable.
 #'@param group unquoted expression indicating the
 #'variable name in \code{data} that corresponds to the group variable.
 #'@param ae_grade unquoted expression indicating the
