@@ -2,9 +2,11 @@ Package: visae
 Type: Package
 Title: Visualization of Adverse Events
 Version: 0.1.0
-Author: Marcio Augusto Diniz and Michael Luu
-Maintainer: Marcio Augusto Diniz <marcio.diniz@cshs.org>
-Description: Implementation of Shiny apps to visualize adverse events.
+Authors@R: c(person("Marcio A. Diniz", 
+                    role = c("aut", "cre","cph"),
+                    email = "marcio.diniz@cshs.org"),
+              person("Michael Luu", role = "aut"))
+Description: Implementation of Shiny app to visualize adverse events based on the Common Terminology Criteria for Adverse Events using stacked correspondence analysis.
 License: GPL(>= 2)
 Depends: shiny (>= 1.4.0),
          dplyr (>= 1.0.0),
