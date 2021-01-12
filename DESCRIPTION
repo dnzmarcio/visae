@@ -6,7 +6,8 @@ Authors@R: c(person("Marcio A. Diniz",
                     role = c("aut", "cre","cph"),
                     email = "marcio.diniz@cshs.org"),
               person("Michael Luu", role = "aut"))
-Description: Implementation of Shiny app to visualize adverse events based on the Common Terminology Criteria for Adverse Events using stacked correspondence analysis.
+Description: Implementation of Shiny app to visualize adverse events based on the Common Terminology Criteria for Adverse Events using stacked correspondence analysis as described in Diniz et. al (2021) <arXiv:2101.03454>.
+BugReports: https://github.com/dnzmarcio/visae/issues
 License: GPL(>= 2)
 Depends: shiny (>= 1.4.0),
          dplyr (>= 1.0.0),
