@@ -4,9 +4,13 @@ Title: Visualization of Adverse Events
 Version: 0.1.0
 Authors@R: c(person("Marcio A. Diniz", 
                     role = c("aut", "cre","cph"),
-                    email = "marcio.diniz@cshs.org"),
-              person("Michael Luu", role = "aut"))
-Description: Implementation of Shiny app to visualize adverse events based on the Common Terminology Criteria for Adverse Events using stacked correspondence analysis as described in Diniz et. al (2021) <arXiv:2101.03454>.
+                    email = "marcio.diniz@cshs.org",
+                    comment = c(ORCID = "0000-0002-2427-7843")),
+              person("Michael Luu", 
+                     role = "aut",
+                     email = "michael.luu@cshs.org",
+                     comment = c(ORCID = "0000-0002-7968-7313")))
+Description: Implementation of 'shiny' app to visualize adverse events based on the Common Terminology Criteria for Adverse Events (CTCAE) using stacked correspondence analysis as described in Diniz et. al (2021) <arXiv:2101.03454>.
 BugReports: https://github.com/dnzmarcio/visae/issues
 License: GPL(>= 2)
 Depends: shiny (>= 1.4.0),
