@@ -58,7 +58,6 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   temp <- enquos(group = group,
                  ae = ae_class, id = id,
                  .ignore_empty = "all")
-  #aux <- data %>% select(!!!temp)
 
   aux <- data %>% select(!!!temp) %>% na.exclude() %>%
     distinct(id, .data$ae, .keep_all = TRUE)
@@ -69,9 +68,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   q <- 1 - p
   rownames(q) <- paste0(rownames(q), "_C")
   tab.ca <- rbind(p, q)
-  # tab.ca <- p
 
-  #tab <- with(aux, table(ae, group))
   res.ca <- ca(tab.ca)
 
   names(dimnames(p)) <- c("ae", "group")
