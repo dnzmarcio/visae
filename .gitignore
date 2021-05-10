@@ -4,3 +4,5 @@
 .Ruserdata
 CRAN-RELEASE
 docs
+Thumbs.db
+_pkgdown.yml
