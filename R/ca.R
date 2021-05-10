@@ -97,11 +97,6 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
   if (ncol(tab_abs) < 4){
 
-    principal.coordinates.col <-
-      tibble(dim_1 = as.numeric(res.ca$colcoord*res.ca$sv)) %>% #
-      mutate(labels = rownames(res.ca$colcoord),
-             type = "col", contr = 1, mass = 0.5)
-
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
 
     contr <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
@@ -123,6 +118,20 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
              mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     colnames(standard.coordinates.row)[2] <- "dim_1"
+
+    group_mass <- ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)) &
+                           is.finite(max(standard.coordinates.row$mass, na.rm = TRUE)),
+                         (min(standard.coordinates.row$mass, na.rm = TRUE) +
+                            max(standard.coordinates.row$mass, na.rm = TRUE))/2,
+                         ifelse(is.finite(max(standard.coordinates.row$mass, na.rm = TRUE)),
+                                0.5*max(standard.coordinates.row$mass, na.rm = TRUE),
+                                ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)),
+                                       1.5*min(standard.coordinates.row$mass, na.rm = TRUE), 0.5)))
+
+    principal.coordinates.col <-
+      tibble(dim_1 = as.numeric(res.ca$colcoord*res.ca$sv)) %>% #
+      mutate(labels = rownames(res.ca$colcoord),
+             type = "col", contr = 1, mass = group_mass)
 
     selected_classes <- as.character(standard.coordinates.row$labels)
 
@@ -181,13 +190,6 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     colnames(tab_contr)[-1] <- "Dim 1"
 
   } else {
-    aux <- res.ca$colcoord*res.ca$sv
-    colnames(aux) <- paste0("dim_", 1:ncol(aux))
-    principal.coordinates.col <-
-      as_tibble(aux) %>%
-      mutate(labels = rownames(res.ca$colcoord),
-             type = "col",
-             contr = 1, mass = 0.5)
 
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
@@ -211,6 +213,23 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
              mass = average/100) %>%
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     selected_classes <- as.character(standard.coordinates.row$labels)
+
+    group_mass <- ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)) &
+      is.finite(max(standard.coordinates.row$mass, na.rm = TRUE)),
+      (min(standard.coordinates.row$mass, na.rm = TRUE) +
+        max(standard.coordinates.row$mass, na.rm = TRUE))/2,
+      ifelse(is.finite(max(standard.coordinates.row$mass, na.rm = TRUE)),
+             0.5*max(standard.coordinates.row$mass, na.rm = TRUE),
+             ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)),
+                    1.5*min(standard.coordinates.row$mass, na.rm = TRUE), 0.5)))
+
+    aux <- res.ca$colcoord%*%diag(res.ca$sv)
+    colnames(aux) <- paste0("dim_", 1:ncol(aux))
+    principal.coordinates.col <-
+      as_tibble(aux) %>%
+      mutate(labels = rownames(res.ca$colcoord),
+             type = "col",
+             contr = 1, mass = group_mass)
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row %>%
