@@ -48,7 +48,7 @@
 #'@importFrom tidyr pivot_wider separate
 #'@importFrom ca ca
 #'@importFrom stats addmargins
-#'@importFrom ggrepel geom_text_repel
+#'@importFrom ggrepel geom_label_repel
 #'
 #'@export
 ca_ae <- function(data, id, group, ae_class, label = "AE",
@@ -160,7 +160,9 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     asymmetric_plot <- asymmetric_plot +
       geom_vline(xintercept = 0, linetype = 2) +
       geom_point() +
-      geom_text_repel(aes(label = .data$labels)) +
+      geom_label_repel(aes(label = .data$labels),
+                       xlim = c(-Inf, Inf), ylim = c(-Inf, Inf),
+                       min.segment.length = 0) +
       scale_colour_manual(values = c("red", "blue")) +
       labs(x = paste0("Dim 1 ", "(", round(explained_var[1], 2), "%)")) +
       theme_minimal() +
@@ -245,7 +247,9 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       geom_hline(yintercept = 0, linetype = 2) +
       geom_vline(xintercept = 0, linetype = 2) +
       geom_point() +
-      geom_text_repel(aes(label = .data$labels)) +
+      geom_label_repel(aes(label = .data$labels),
+                       xlim = c(-Inf, Inf), ylim = c(-Inf, Inf),
+                       min.segment.length = 0) +
       scale_colour_manual(values = c("red", "blue")) +
       labs(x = paste0("Dim 1 ", "(", round(explained_var[1], 2), "%)"),
            y = paste0("Dim 2 ", "(", round(explained_var[2], 2), "%)")) +
