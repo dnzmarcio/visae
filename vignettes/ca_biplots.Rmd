@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The R package [`visae`](https://cran.r-project.org/web/packages/visae/index.html) implements 'shiny' apps to visualize adverse events (AE) based on the Common Terminology Criteria for Adverse Events (CTCAE).
+The R package [`visae`](https://CRAN.R-project.org/package=visae) implements 'shiny' apps to visualize adverse events (AE) based on the Common Terminology Criteria for Adverse Events (CTCAE).
 
 ## Installation
 ``` r
