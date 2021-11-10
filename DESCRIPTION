@@ -10,7 +10,7 @@ Authors@R: c(person("Marcio A. Diniz",
                      role = "aut",
                      email = "michael.luu@cshs.org",
                      comment = c(ORCID = "0000-0002-7968-7313")))
-Description: Implementation of 'shiny' app to visualize adverse events based on the Common Terminology Criteria for Adverse Events (CTCAE) using stacked correspondence analysis as described in Diniz et. al (2021) <arXiv:2101.03454>.
+Description: Implementation of 'shiny' app to visualize adverse events based on the Common Terminology Criteria for Adverse Events (CTCAE) using stacked correspondence analysis as described in Diniz et. al (2021).<doi:10.1186/s12874-021-01368-w>
 BugReports: https://github.com/dnzmarcio/visae/issues
 License: GPL(>= 2)
 Depends: shiny (>= 1.4.0),
@@ -25,4 +25,8 @@ Imports: shinyjs (>= 1.1),
          DT (>= 0.13)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr

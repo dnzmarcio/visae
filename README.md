@@ -74,4 +74,4 @@ See step by step to interpret biplots correctly are below:
 
 
 ## References
-- [Diniz MA, Gresham G, Kim S, Luu M, Henry NL, Tighiouart M, Yothers G, Ganz PA, Rogatko A. Visualizing adverse events using correspondence analysis. arXiv e-prints. 2021 Jan:arXiv-2101.](https://arxiv.org/abs/2101.03454).
+- [Diniz, M.A., Gresham, G., Kim, S. et al. Visualizing adverse events in clinical trials using correspondence analysis with R-package visae. BMC Med Res Methodol 21, 244 (2021). https://doi.org/10.1186/s12874-021-01368-w](https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01368-w).
