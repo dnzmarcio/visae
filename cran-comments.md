@@ -1,3 +1,46 @@
+# Version: 0.2.0
+
+## Test environments
+- R-hub windows-x86_64-devel (r-devel)
+- R-hub ubuntu-gcc-release (r-release)
+- R-hub fedora-clang-devel (r-devel)
+
+## R CMD check results
+
+-- visae 0.2.0: NOTE
+
+  Build ID:   visae_0.2.0.tar.gz-a5e19a17ac98471a94af4cf4490d0030
+  Platform:   Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+
+  Build time: 3m 53.6s
+
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'Marcio A. Diniz <marcio.diniz@cshs.org>'
+
+  Possibly misspelled words in DESCRIPTION:
+    CTCAE (13:133)
+    
+-- visae 0.2.0: NOTE
+  Build ID:   visae_0.2.0.tar.gz-94f1e5200c7a4e2596ff4f13cf78ad21
+  Platform:   Ubuntu Linux 20.04.1 LTS, R-release, GCC
+
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'Marcio A. Diniz <marcio.diniz@cshs.org>'
+
+  Possibly misspelled words in DESCRIPTION:
+    CTCAE (13:133)
+
+-- visae 0.2.0: NOTE
+
+  Build ID:   visae_0.2.0.tar.gz-a5bc0e31073947dcbcf3939cd926da95
+  Platform:   Fedora Linux, R-devel, clang, gfortran
+
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'Marcio A. Diniz <marcio.diniz@cshs.org>'
+
+  Possibly misspelled words in DESCRIPTION:
+    CTCAE (13:133)
+
 # Version: 0.1.0
 
 ## Test environments
