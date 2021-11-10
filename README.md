@@ -3,7 +3,7 @@
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/visae)](https://cran.r-project.org/package=visae)
 [![](https://cranlogs.r-pkg.org/badges/visae)](https://cran.r-project.org/package=visae)
 
-The R package [`visae`](https://cran.r-project.org/web/packages/visae/index.html) implements 'shiny' apps to visualize adverse events (AE) based on the Common Terminology Criteria for Adverse Events (CTCAE).
+The R package [`visae`](https://cran.r-project.org/package=visae) implements 'shiny' apps to visualize adverse events (AE) based on the Common Terminology Criteria for Adverse Events (CTCAE).
 
 ## Installation
 ``` r
