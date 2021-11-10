@@ -75,14 +75,19 @@ See step by step to interpret biplots correctly are below:
 ![](figures/fig1.png)
 
 #### 2. Interpreting percentage of explained variability by dimensions, center average treatment and AE dot sizes
-![](figures/fig2.png)
+```{r, echo=FALSE, out.width="100%", out.height="100%"}
+knitr::include_graphics("figures/fig2.png")
+```
 
 #### 3. Interpreting dimensions and associations between treatments and AEs
-![](figures/fig3.png)
+```{r, echo=FALSE, out.width="100%", out.height="100%"}
+knitr::include_graphics("figures/fig3.png")
+```
 
 #### 4. Comparing treatments and avoiding misleading interpretations
-![](figures/fig4.png)
-
+```{r, echo=FALSE, out.width="100%", out.height="100%"}
+knitr::include_graphics("figures/fig4.png")
+```
 
 ## References
 - [Diniz, M.A., Gresham, G., Kim, S. et al. Visualizing adverse events in clinical trials using correspondence analysis with R-package visae. BMC Med Res Methodol 21, 244 (2021). https://doi.org/10.1186/s12874-021-01368-w](https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01368-w).
