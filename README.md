@@ -11,7 +11,7 @@ instal.packages("visae")
 ```
 The latest version can be installed from GitHub as follows:
 ``` r
-devtools::install_github("dnzmarcio/mice")
+devtools::install_github("dnzmarcio/visae")
 ```
 
 ## Stacked Correspondence Analysis
