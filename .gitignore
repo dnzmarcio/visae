@@ -6,3 +6,4 @@ CRAN-RELEASE
 docs
 Thumbs.db
 _pkgdown.yml
+inst/doc
