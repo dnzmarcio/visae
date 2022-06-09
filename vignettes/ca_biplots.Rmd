@@ -69,10 +69,12 @@ ca$asymmetric_plot
 ### Interpreting biplots for Correspondence Analysis
 
 Investigators often interpret CA biplots erroneously assuming that the distance between AE classes dots and treatments dots is an indicative of association.
-See step by step to interpret biplots correctly are below:
+See below step by step how to interpret biplots correctly:
 
 #### 1. Minimum example dataset
-![](figures/fig1.png)
+```{r, echo=FALSE, out.width="100%", out.height="100%"}
+knitr::include_graphics("figures/fig1.png")
+```
 
 #### 2. Interpreting percentage of explained variability by dimensions, center average treatment and AE dot sizes
 ```{r, echo=FALSE, out.width="100%", out.height="100%"}
