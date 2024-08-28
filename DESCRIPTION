@@ -4,7 +4,7 @@ Title: Visualization of Adverse Events
 Version: 0.2.0
 Authors@R: c(person("Marcio A. Diniz", 
                     role = c("aut", "cre","cph"),
-                    email = "marcio.diniz@cshs.org",
+                    email = "marcio.diniz@mountsinai.org",
                     comment = c(ORCID = "0000-0002-2427-7843")),
               person("Michael Luu", 
                      role = "aut",
