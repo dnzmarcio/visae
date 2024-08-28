@@ -362,13 +362,10 @@ ui = function(data){
                           tabPanel("Authors",
                                    column(width = 8, offset = 1,
                                           p(h4("Contact")),
-                                          p("Marcio Augusto Diniz", "<marcio.diniz@cshs.org>"),
-                                          p("Michael Luu", "<michael.luu@cshs.org>"),
-                                          p("Gillian Gresham", "<gillian.gresham@cshs.org>"),
-                                          p("Andre Rogatko", "<andre.rogatko@cshs.org>"),
-                                          p(strong("Cedars Sinai Medical Center")),
-                                          p(strong("Samuel Oschin Comprehensive Cancer Institute,
-                                              Biostatistics Core"))
+                                          p(strong("Icahn School of Medicine at Mount Sinai")),
+                                          p(strong("Tisch Cancer Institute,
+                                              Biostatistics Core"),
+                                          p("Marcio Augusto Diniz", "<marcio.diniz@mountsinai.org>"))
                                    ),
                                    column(width = 8, offset = 1,
                                           p(h4("Funding")),
