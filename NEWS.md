@@ -7,3 +7,6 @@
 * Group size dots were fixed;
 * Background labels were added.
 * Vignette was added.
+
+# visae 0.2.0 - 09/15/2024
+* Contact email was updated.
