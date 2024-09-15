@@ -1,7 +1,7 @@
 Package: visae
 Type: Package
 Title: Visualization of Adverse Events
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(person("Marcio A. Diniz", 
                     role = c("aut", "cre","cph"),
                     email = "marcio.diniz@mountsinai.org",
