@@ -24,8 +24,10 @@ Imports: shinyjs (>= 1.1),
          rlang (>= 0.4.6),
          DT (>= 0.13)
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.1
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
