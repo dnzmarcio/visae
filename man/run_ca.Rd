@@ -43,7 +43,7 @@ for adverse event data.
 Shiny App for Correspondence Analysis of Adverse Events
 }
 \examples{
-\dontrun{
+if (interactive()) {
 library(magrittr)
 library(dplyr)
 patient_id <- 1:100

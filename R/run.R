@@ -19,7 +19,7 @@
 #'
 #'
 #'@examples
-#'\dontrun{
+#'if (interactive()) {
 #'library(magrittr)
 #'library(dplyr)
 #'patient_id <- 1:100
