@@ -9,4 +9,5 @@
 * Vignette was added.
 
 # visae 0.2.1 - 01/27/2025
-* Contact email was updated.
+* Contact email was updated;
+* Testthat framework was incorporated.
