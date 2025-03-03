@@ -27,7 +27,6 @@
 #'@references Levine RA, Sampson E, Lee TC. Journal of Computational and Graphical Statistics. Wiley Interdisciplinary Reviews: Computational Statistics. 2014 Jul;6(4):233-9.
 #'
 #'@examples
-#'library(magrittr)
 #'library(dplyr)
 #'
 #'id <- rep(1:50, each = 2)
@@ -37,11 +36,15 @@
 #'ae_term <- sample(c("F", "G", "H", "I"), size = 100, replace = TRUE)
 #'df <- tibble(id = id, trt = group,
 #'             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
-#'test <- df %>% ca_ae(., id = id, group = trt, ae = ae_g, label = "AE",
-#'                     contr_indicator = TRUE, mass_indicator = TRUE,
-#'                     contr_threshold = 0.01, mass_threshold = 0.01)
+#'test <- df |> ca_ae(., id = id,
+#'                     group = trt,
+#'                     ae = ae_g,
+#'                     label = "AE",
+#'                     contr_indicator = TRUE,
+#'                     mass_indicator = TRUE,
+#'                     contr_threshold = 0.01,
+#'                     mass_threshold = 0.01)
 #'
-#'@import magrittr
 #'@import ggplot2
 #'@import dplyr
 #'@importFrom rlang .data enquos :=
@@ -59,10 +62,12 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
                  ae = ae_class, id = id,
                  .ignore_empty = "all")
 
-  aux <- data %>% select(!!!temp) %>% na.exclude() %>%
+  aux <- data |> select(!!!temp) |>
+    na.exclude() |>
     distinct(id, .data$ae, .keep_all = TRUE)
-  total <- data %>% select(!!!temp) %>%
-    distinct(id, .keep_all = TRUE) %>% count(group)
+  total <- data |> select(!!!temp) |>
+    distinct(id, .keep_all = TRUE) |>
+    count(group)
   tab <- table(aux$ae, aux$group)
   p <- t(t(tab)/as.numeric(total$n))
   q <- 1 - p
@@ -73,8 +78,8 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
   names(dimnames(p)) <- c("ae", "group")
   average <- round(100*rowMeans(p), 3)
-  tab_rel <- round(100*p, 3) %>% as_tibble() %>%
-   pivot_wider(names_from = .data$group, values_from = .data$n) %>%
+  tab_rel <- round(100*p, 3) |> as_tibble() |>
+   pivot_wider(names_from = .data$group, values_from = .data$n) |>
    mutate(Average = average)
 
   if (is.null(contr_threshold))
@@ -85,7 +90,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   expected_threshold <- 1/nrow(tab)
 
   names(dimnames(tab)) <- c("ae", "group")
-  tab_abs <- tab %>% as_tibble() %>%
+  tab_abs <- tab |> as_tibble() |>
     pivot_wider(names_from = .data$group, values_from = .data$n)
 
   inertia <- res.ca$sv^2
@@ -100,22 +105,22 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     aux <- res.ca$rowcoord*sqrt(res.ca$rowmass)
 
     contr <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
-    tab_contr <- as_tibble(contr, rownames = "labels") %>%
+    tab_contr <- as_tibble(contr, rownames = "labels") |>
       separate(labels, into = c("ae", "delete"),
-               sep = "_", fill = "right") %>%
-      group_by(.data$ae) %>%
+               sep = "_", fill = "right") |>
+      group_by(.data$ae) |>
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
 
     standard.coordinates.row <-
-      as_tibble(aux, rownames = "labels") %>%
+      as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
-               sep = "_", fill = "right") %>%
-      filter(is.na(.data$delete)) %>% select(-.data$delete) %>%
+               sep = "_", fill = "right") |>
+      filter(is.na(.data$delete)) |> select(-.data$delete) |>
       mutate(type = "row",
              contr = tab_contr[[2]]/100,
-             mass = average/100) %>%
+             mass = average/100) |>
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     colnames(standard.coordinates.row)[2] <- "dim_1"
 
@@ -129,14 +134,14 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
                                        1.5*min(standard.coordinates.row$mass, na.rm = TRUE), 0.5)))
 
     principal.coordinates.col <-
-      tibble(dim_1 = as.numeric(res.ca$colcoord*res.ca$sv)) %>% #
+      tibble(dim_1 = as.numeric(res.ca$colcoord*res.ca$sv)) |> #
       mutate(labels = rownames(res.ca$colcoord),
              type = "col", contr = 1, mass = group_mass)
 
     selected_classes <- as.character(standard.coordinates.row$labels)
 
     if (nrow(standard.coordinates.row) > 0)
-      standard.coordinates.row <- standard.coordinates.row %>%
+      standard.coordinates.row <- standard.coordinates.row |>
       mutate(contr = .data$contr/max(.data$contr))
 
 
@@ -182,10 +187,10 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_alpha_continuous(range = c(0.3, 1))
 
     temp <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
-    tab_contr <- as_tibble(temp, rownames = "ae") %>%
+    tab_contr <- as_tibble(temp, rownames = "ae") |>
       separate(.data$ae, into = c("ae", "delete"),
-               sep = "_", fill = "right") %>%
-      group_by(.data$ae) %>%
+               sep = "_", fill = "right") |>
+      group_by(.data$ae) |>
       summarize(across(starts_with("Dim"), sum, .names = "{col}"))
     colnames(tab_contr)[-1] <- "Dim 1"
 
@@ -195,22 +200,22 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
 
     contr <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
-    tab_contr <- as_tibble(contr, rownames = "labels") %>%
+    tab_contr <- as_tibble(contr, rownames = "labels") |>
       separate(labels, into = c("ae", "delete"),
-               sep = "_", fill = "right") %>%
-      group_by(.data$ae) %>%
+               sep = "_", fill = "right") |>
+      group_by(.data$ae) |>
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
 
     standard.coordinates.row <-
-      as_tibble(aux, rownames = "labels") %>%
+      as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
-               sep = "_", fill = "right") %>%
-      filter(is.na(.data$delete)) %>% select(-.data$delete) %>%
+               sep = "_", fill = "right") |>
+      filter(is.na(.data$delete)) |> select(-.data$delete) |>
       mutate(type = "row",
              contr = pmax(tab_contr[[2]]/100, tab_contr[[3]]/100),
-             mass = average/100) %>%
+             mass = average/100) |>
       filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     selected_classes <- as.character(standard.coordinates.row$labels)
 
@@ -226,13 +231,13 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     aux <- res.ca$colcoord%*%diag(res.ca$sv)
     colnames(aux) <- paste0("dim_", 1:ncol(aux))
     principal.coordinates.col <-
-      as_tibble(aux) %>%
+      as_tibble(aux) |>
       mutate(labels = rownames(res.ca$colcoord),
              type = "col",
              contr = 1, mass = group_mass)
 
     if (nrow(standard.coordinates.row) > 0)
-      standard.coordinates.row <- standard.coordinates.row %>%
+      standard.coordinates.row <- standard.coordinates.row |>
       mutate(contr = .data$contr/max(.data$contr))
 
     dp <- bind_rows(principal.coordinates.col, standard.coordinates.row)
@@ -276,12 +281,12 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_alpha_continuous(range = c(0.3, 1))
   }
 
-  tab_rel <- tab_rel %>% filter(.data$ae %in% selected_classes) %>%
-    rename(!!label := .data$ae) %>%
+  tab_rel <- tab_rel |> filter(.data$ae %in% selected_classes) |>
+    rename(!!label := .data$ae) |>
     mutate(across(where(is.numeric), ~ format(.x, digits = 2, nsmall = 2)))
   colnames(tab_rel)[-c(1, ncol(tab_rel))] <-
     paste0(colnames(tab_rel)[-c(1, ncol(tab_rel))], "<br> (n = ", total$n, ")")
-  tab_contr  <- tab_contr %>% filter(.data$ae %in% selected_classes) %>%
+  tab_contr  <- tab_contr |> filter(.data$ae %in% selected_classes) |>
     rename(!!label := .data$ae)
 
   out <- list(tab_abs = tab_abs, tab_rel = tab_rel,

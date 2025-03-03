@@ -3,7 +3,7 @@ shiny_grade <- function(data, selected_cycle,
                         contr_threshold, mass_threshold){
 
   if ("ae_cycle" %in% colnames(data))
-    data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
+    data <- data |> filter(.data$ae_cycle %in% selected_cycle)
 
   out <- visae::ca_ae(data, id = .data$id,
                       group = .data$group,
@@ -21,9 +21,9 @@ shiny_domain <- function(data, selected_cycle, selected_grade,
                          contr_threshold, mass_threshold){
 
   if ("ae_cycle" %in% colnames(data))
-    data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
+    data <- data |> filter(.data$ae_cycle %in% selected_cycle)
   if ("ae_grade" %in% colnames(data))
-    data <- data %>% filter(.data$ae_grade %in% c(selected_grade, NA))
+    data <- data |> filter(.data$ae_grade %in% c(selected_grade, NA))
 
   out <- visae::ca_ae(data, id = .data$id,
                       group = .data$group,
@@ -41,9 +41,9 @@ shiny_domain_grade <- function(data, selected_cycle,
                                contr_threshold, mass_threshold){
 
   if ("ae_cycle" %in% colnames(data))
-    data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
+    data <- data |> filter(.data$ae_cycle %in% selected_cycle)
 
-  data <- data %>%
+  data <- data |>
     mutate(ae_domain_grade = ifelse(!is.na(.data$ae_domain) &
                                       !is.na(.data$ae_grade),
                                     paste0(.data$ae_domain, ": ", .data$ae_grade),
@@ -65,11 +65,11 @@ shiny_term <- function(data, selected_cycle, selected_domain, selected_grade,
                        contr_threshold, mass_threshold){
 
   if ("ae_cycle" %in% colnames(data))
-    data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
+    data <- data |> filter(.data$ae_cycle %in% selected_cycle)
   if ("ae_domain" %in% colnames(data))
-    data <- data %>% filter(.data$ae_domain %in% c(selected_domain, NA))
+    data <- data |> filter(.data$ae_domain %in% c(selected_domain, NA))
   if ("ae_grade" %in% colnames(data))
-    data <- data %>% filter(.data$ae_grade %in% c(selected_grade, NA))
+    data <- data |> filter(.data$ae_grade %in% c(selected_grade, NA))
 
   out <- visae::ca_ae(data, id = .data$id,
                       group = .data$group,
@@ -87,11 +87,11 @@ shiny_term_grade <- function(data, selected_cycle, selected_domain,
                              contr_threshold, mass_threshold){
 
   if ("ae_cycle" %in% colnames(data))
-    data <- data %>% filter(.data$ae_cycle %in% selected_cycle)
+    data <- data |> filter(.data$ae_cycle %in% selected_cycle)
   if ("ae_domain" %in% colnames(data))
-    data <- data %>% filter(.data$ae_domain %in% c(selected_domain, NA))
+    data <- data |> filter(.data$ae_domain %in% c(selected_domain, NA))
 
-  data <- data %>%
+  data <- data |>
     mutate(ae_term_grade = ifelse(!is.na(.data$ae_term) &
                                     !is.na(.data$ae_grade),
                                   paste0(.data$ae_term, ": ", .data$ae_grade),
