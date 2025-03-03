@@ -47,7 +47,7 @@
 #'
 #'@import ggplot2
 #'@import dplyr
-#'@importFrom rlang enquos :=
+#'@importFrom rlang .data enquos :=
 #'@importFrom tidyr pivot_wider separate
 #'@importFrom ca ca
 #'@importFrom stats addmargins
@@ -64,7 +64,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
   aux <- data |> select(!!!temp) |>
     na.exclude() |>
-    distinct(id, ae, .keep_all = TRUE)
+    distinct(id, .data$ae, .keep_all = TRUE)
   total <- data |> select(!!!temp) |>
     distinct(id, .keep_all = TRUE) |>
     count(group)
@@ -79,7 +79,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
   names(dimnames(p)) <- c("ae", "group")
   average <- round(100*rowMeans(p), 3)
   tab_rel <- round(100*p, 3) |> as_tibble() |>
-   pivot_wider(names_from = group, values_from = n) |>
+   pivot_wider(names_from = .data$group, values_from = .data$n) |>
    mutate(Average = average)
 
   if (is.null(contr_threshold))
@@ -91,7 +91,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
   names(dimnames(tab)) <- c("ae", "group")
   tab_abs <- tab |> as_tibble() |>
-    pivot_wider(names_from = group, values_from = n)
+    pivot_wider(names_from = .data$group, values_from = .data$n)
 
   inertia <- res.ca$sv^2
   total_inertia <- sum(inertia)
@@ -108,7 +108,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     tab_contr <- as_tibble(contr, rownames = "labels") |>
       separate(labels, into = c("ae", "delete"),
                sep = "_", fill = "right") |>
-      group_by(ae) |>
+      group_by(.data$ae) |>
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
@@ -117,11 +117,11 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") |>
-      filter(is.na(delete)) |> select(-delete) |>
+      filter(is.na(.data$delete)) |> select(-.data$delete) |>
       mutate(type = "row",
              contr = tab_contr[[2]]/100,
              mass = average/100) |>
-      filter(contr > contr_threshold & mass > mass_threshold)
+      filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     colnames(standard.coordinates.row)[2] <- "dim_1"
 
     group_mass <- ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)) &
@@ -142,36 +142,36 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row |>
-      mutate(contr = contr/max(contr))
+      mutate(contr = .data$contr/max(.data$contr))
 
 
     dp <- bind_rows(principal.coordinates.col, standard.coordinates.row)
 
     if (mass_indicator & contr_indicator){
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1, y = NA,
-                                        color = type,
-                                        alpha = contr,
-                                        size = mass))
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1, y = NA,
+                                        color = .data$type,
+                                        alpha = .data$contr,
+                                        size = .data$mass))
     } else if (mass_indicator & !contr_indicator){
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
                                         y = NA,
-                                        color = type,
-                                        size = mass))
+                                        color = .data$type,
+                                        size = .data$mass))
     } else if (!mass_indicator & contr_indicator) {
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
                                         y = NA,
-                                        color = type,
-                                        alpha = contr))
+                                        color = .data$type,
+                                        alpha = .data$contr))
     } else {
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
                                         y = NA,
-                                        color = type))
+                                        color = .data$type))
     }
 
     asymmetric_plot <- asymmetric_plot +
       geom_vline(xintercept = 0, linetype = 2) +
       geom_point() +
-      geom_label_repel(aes(label = labels),
+      geom_label_repel(aes(label = .data$labels),
                        xlim = c(-Inf, Inf), ylim = c(-Inf, Inf),
                        min.segment.length = 0) +
       scale_colour_manual(values = c("red", "blue")) +
@@ -188,9 +188,9 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
     temp <- round(100*(res.ca$rowcoord*sqrt(res.ca$rowmass))^2, 2)
     tab_contr <- as_tibble(temp, rownames = "ae") |>
-      separate(ae, into = c("ae", "delete"),
+      separate(.data$ae, into = c("ae", "delete"),
                sep = "_", fill = "right") |>
-      group_by(ae) |>
+      group_by(.data$ae) |>
       summarize(across(starts_with("Dim"), sum, .names = "{col}"))
     colnames(tab_contr)[-1] <- "Dim 1"
 
@@ -203,7 +203,7 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
     tab_contr <- as_tibble(contr, rownames = "labels") |>
       separate(labels, into = c("ae", "delete"),
                sep = "_", fill = "right") |>
-      group_by(ae) |>
+      group_by(.data$ae) |>
       summarise(across(starts_with("Dim"), sum, .names = "{col}"),
                 .groups = "drop_last")
     colnames(tab_contr)[-1] <- paste0("Dim ", 1:ncol(aux))
@@ -212,11 +212,11 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") |>
-      filter(is.na(delete)) |> select(-delete) |>
+      filter(is.na(.data$delete)) |> select(-.data$delete) |>
       mutate(type = "row",
              contr = pmax(tab_contr[[2]]/100, tab_contr[[3]]/100),
              mass = average/100) |>
-      filter(contr > contr_threshold & mass > mass_threshold)
+      filter(.data$contr > contr_threshold & .data$mass > mass_threshold)
     selected_classes <- as.character(standard.coordinates.row$labels)
 
     group_mass <- ifelse(is.finite(min(standard.coordinates.row$mass, na.rm = TRUE)) &
@@ -238,37 +238,37 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
 
     if (nrow(standard.coordinates.row) > 0)
       standard.coordinates.row <- standard.coordinates.row |>
-      mutate(contr = contr/max(contr))
+      mutate(contr = .data$contr/max(.data$contr))
 
     dp <- bind_rows(principal.coordinates.col, standard.coordinates.row)
 
 
     if (mass_indicator & contr_indicator){
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
-                                        y = dim_2,
-                                        color = type,
-                                        alpha = contr,
-                                        size = mass))
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
+                                        y = .data$dim_2,
+                                        color = .data$type,
+                                        alpha = .data$contr,
+                                        size = .data$mass))
     } else if (mass_indicator & !contr_indicator){
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1, y = dim_2,
-                                        color = type,
-                                        size = mass))
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1, y = .data$dim_2,
+                                        color = .data$type,
+                                        size = .data$mass))
     } else if (!mass_indicator & contr_indicator){
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
-                                        y = dim_2,
-                                        color = type,
-                                        alpha = contr))
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
+                                        y = .data$dim_2,
+                                        color = .data$type,
+                                        alpha = .data$contr))
     } else {
-      asymmetric_plot <- ggplot(dp, aes(x = dim_1,
-                                        y = dim_2,
-                                        color = type))
+      asymmetric_plot <- ggplot(dp, aes(x = .data$dim_1,
+                                        y = .data$dim_2,
+                                        color = .data$type))
     }
 
     asymmetric_plot <- asymmetric_plot +
       geom_hline(yintercept = 0, linetype = 2) +
       geom_vline(xintercept = 0, linetype = 2) +
       geom_point() +
-      geom_label_repel(aes(label = labels),
+      geom_label_repel(aes(label = .data$labels),
                        xlim = c(-Inf, Inf), ylim = c(-Inf, Inf),
                        min.segment.length = 0) +
       scale_colour_manual(values = c("red", "blue")) +
@@ -281,13 +281,13 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_alpha_continuous(range = c(0.3, 1))
   }
 
-  tab_rel <- tab_rel |> filter(ae %in% selected_classes) |>
-    rename(!!label := ae) |>
+  tab_rel <- tab_rel |> filter(.data$ae %in% selected_classes) |>
+    rename(!!label := .data$ae) |>
     mutate(across(where(is.numeric), ~ format(.x, digits = 2, nsmall = 2)))
   colnames(tab_rel)[-c(1, ncol(tab_rel))] <-
     paste0(colnames(tab_rel)[-c(1, ncol(tab_rel))], "<br> (n = ", total$n, ")")
-  tab_contr  <- tab_contr |> filter(ae %in% selected_classes) |>
-    rename(!!label := ae)
+  tab_contr  <- tab_contr |> filter(.data$ae %in% selected_classes) |>
+    rename(!!label := .data$ae)
 
   out <- list(tab_abs = tab_abs, tab_rel = tab_rel,
               total_inertia = total_inertia,
