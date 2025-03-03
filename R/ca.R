@@ -117,7 +117,8 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") |>
-      filter(is.na(.data$delete)) |> select(-.data$delete) |>
+      filter(is.na(.data$delete)) |>
+      select(-all_of("delete")) |>
       mutate(type = "row",
              contr = tab_contr[[2]]/100,
              mass = average/100) |>
@@ -212,7 +213,8 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       as_tibble(aux, rownames = "labels") |>
       separate(labels, into = c("labels", "delete"),
                sep = "_", fill = "right") |>
-      filter(is.na(.data$delete)) |> select(-.data$delete) |>
+      filter(is.na(.data$delete)) |>
+      select(-all_of("delete")) |>
       mutate(type = "row",
              contr = pmax(tab_contr[[2]]/100, tab_contr[[3]]/100),
              mass = average/100) |>
@@ -281,7 +283,8 @@ ca_ae <- function(data, id, group, ae_class, label = "AE",
       scale_alpha_continuous(range = c(0.3, 1))
   }
 
-  tab_rel <- tab_rel |> filter(.data$ae %in% selected_classes) |>
+  tab_rel <- tab_rel |>
+    filter(.data$ae %in% selected_classes) |>
     rename(!!label := .data$ae) |>
     mutate(across(where(is.numeric), ~ format(.x, digits = 2, nsmall = 2)))
   colnames(tab_rel)[-c(1, ncol(tab_rel))] <-
