@@ -1,3 +1,27 @@
+# Version: 0.2.1
+
+## Test environments
+- R-hub windows-x86_64-devel (r-devel)
+- R-hub ubuntu-gcc-release (r-release)
+- R-hub fedora-clang-devel (r-devel)
+
+## R CMD check results
+Duration: 1m 3.2s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+
+## Previous comments
+
+\dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \dontrun{} adds the comment ("# Not run:") as a warning for the user. Does not seem necessary.
+Please replace \dontrun with \donttest.
+
+Please unwrap the examples if they are executable in < 5 sec, or replace dontrun{} with \donttest{}.
+
+Please replace the \dontrun{}-wrapper with if(interactive()){} for shiny applications.
+
+Since we cannot automatically check shiny interfaces, the best solution would be to write tests for your not exported function (e.g. using package testthat). Otherwise we wouldn't detect that your package does not work any more because of changes in R or the packages you depend on.
+
+
 # Version: 0.2.0
 
 ## Test environments
