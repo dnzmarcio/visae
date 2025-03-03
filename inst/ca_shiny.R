@@ -362,16 +362,22 @@ ui = function(data){
                           tabPanel("Authors",
                                    column(width = 8, offset = 1,
                                           p(h4("Contact")),
-                                          p(strong("Icahn School of Medicine at Mount Sinai")),
-                                          p(strong("Tisch Cancer Institute,
-                                              Biostatistics Core"),
-                                          p("Marcio Augusto Diniz", "<marcio.diniz@mountsinai.org>"))
+                                          p("Marcio Augusto Diniz", "<marcio.diniz@mountsinai.org>"),
+                                          p(a(strong("Biostatistics Core"),
+                                              href = "https://www.cedars-sinai.edu/health-sciences-university/research/cores/biostatistics-shared-resource.html"),
+                                            strong("Tisch Cancer Institute, Icahn School of Medicine at Mount Sinai")),
+                                          p(a("Cancer Center Support Grant",
+                                              href="https://reporter.nih.gov/project-details/10898783"),
+                                            " - Grant Number: P30CA196521")
                                    ),
                                    column(width = 8, offset = 1,
-                                          p(h4("Funding")),
+                                          p(h4("Initially developed at:")),
+                                          p(a(strong("Biostatistics Core"),
+                                              href = "https://www.cedars-sinai.edu/health-sciences-university/research/cores/biostatistics-shared-resource.html"),
+                                            strong("Samuel Oschin Cancer Institute, Cedars-Sinai Medical Center")),
                                           p(a("Moonshot Initiative",
                                               href="https://www.cancer.gov/research/key-initiatives/moonshot-cancer-initiative"),
-                                            " - Grant Number: 1U01CA232859-01")
+                                            " - Grant Number: U01CA232859")
 
                                    )
                           )
@@ -396,7 +402,7 @@ server = function(input, output, session) {
   if('ae_grade' %in% colnames(data)){
 
     tabInput_grade <- reactive({
-      tab <- shiny_grade(data,
+      tab <- visae:::shiny_grade(data,
                           selected_cycle = input$selected_cycle_grade,
                           contr_indicator = input$contr_grade,
                           mass_indicator = input$mass_grade,
@@ -407,7 +413,7 @@ server = function(input, output, session) {
     output$ae_grade_table <- DT::renderDT({tabInput_grade()}, escape = FALSE)
 
     plotInput_grade <- reactive({
-      gp <- shiny_grade(data,
+      gp <- visae:::shiny_grade(data,
                         selected_cycle = input$selected_cycle_grade,
                         contr_indicator = input$contr_grade,
                         mass_indicator = input$mass_grade,
@@ -419,12 +425,12 @@ server = function(input, output, session) {
 
 
     output$ae_grade_contr_table <- DT::renderDataTable(
-      shiny_grade(data,
-                  selected_cycle = input$selected_cycle_grade,
-                  contr_indicator = input$contr_grade,
-                  mass_indicator = input$mass_grade,
-                  contr_threshold = input$contr_threshold_grade/100,
-                  mass_threshold = input$mass_threshold_grade/100)$tab_contr
+      visae:::shiny_grade(data,
+                          selected_cycle = input$selected_cycle_grade,
+                          contr_indicator = input$contr_grade,
+                          mass_indicator = input$mass_grade,
+                          contr_threshold = input$contr_threshold_grade/100,
+                          mass_threshold = input$mass_threshold_grade/100)$tab_contr
     )
 
     output$downloadplot_grade <- downloadHandler(
@@ -447,37 +453,37 @@ server = function(input, output, session) {
     shinyjs::js$enabletabD("Domain")
 
     tabInput_domain <- reactive({
-      tab <- shiny_domain(data,
-                        selected_cycle = input$selected_cycle_domain,
-                        selected_grade = input$selected_grade_domain,
-                        contr_indicator = input$contr_domain,
-                        mass_indicator = input$mass_domain,
-                        contr_threshold = input$contr_threshold_domain/100,
-                        mass_threshold = input$mass_threshold_domain/100)$tab_rel
+      tab <- visae:::shiny_domain(data,
+                                  selected_cycle = input$selected_cycle_domain,
+                                  selected_grade = input$selected_grade_domain,
+                                  contr_indicator = input$contr_domain,
+                                  mass_indicator = input$mass_domain,
+                                  contr_threshold = input$contr_threshold_domain/100,
+                                  mass_threshold = input$mass_threshold_domain/100)$tab_rel
     })
 
     output$ae_domain_table <- DT::renderDT({tabInput_domain()}, escape = FALSE)
 
     plotInput_domain <- reactive({
-      gp <- shiny_domain(data,
-                         selected_cycle = input$selected_cycle_domain,
-                         selected_grade = input$selected_grade_domain,
-                         contr_indicator = input$contr_domain,
-                         mass_indicator = input$mass_domain,
-                         contr_threshold = input$contr_threshold_domain/100,
-                         mass_threshold = input$mass_threshold_domain/100)$asymmetric_plot
+      gp <- visae:::shiny_domain(data,
+                                 selected_cycle = input$selected_cycle_domain,
+                                 selected_grade = input$selected_grade_domain,
+                                 contr_indicator = input$contr_domain,
+                                 mass_indicator = input$mass_domain,
+                                 contr_threshold = input$contr_threshold_domain/100,
+                                 mass_threshold = input$mass_threshold_domain/100)$asymmetric_plot
     })
 
     output$ae_domain_biplot <- renderPlot({print(plotInput_domain())})
 
     output$ae_domain_contr_table <- DT::renderDataTable(
-      shiny_domain(data,
-                   selected_cycle = input$selected_cycle_domain,
-                   selected_grade = input$selected_grade_domain,
-                   contr_indicator = input$contr_domain,
-                   mass_indicator = input$mass_domain,
-                   contr_threshold = input$contr_threshold_domain/100,
-                   mass_threshold = input$mass_threshold_domain/100)$tab_contr
+      visae:::shiny_domain(data,
+                           selected_cycle = input$selected_cycle_domain,
+                           selected_grade = input$selected_grade_domain,
+                           contr_indicator = input$contr_domain,
+                           mass_indicator = input$mass_domain,
+                           contr_threshold = input$contr_threshold_domain/100,
+                           mass_threshold = input$mass_threshold_domain/100)$tab_contr
     )
 
     output$downloadplot_domain <- downloadHandler(
@@ -503,37 +509,37 @@ server = function(input, output, session) {
     shinyjs::js$enabletabD("DomainGrade")
 
     tabInput_domain_grade <- reactive({
-      tab <- shiny_domain_grade(data,
-                          selected_cycle = input$selected_cycle_domain_grade,
-                          contr_indicator = input$contr_domain_grade,
-                          mass_indicator = input$mass_domain_grade,
-                          contr_threshold = input$contr_threshold_domain_grade/100,
-                          mass_threshold = input$mass_threshold_domain_grade/100)$tab_rel
+      tab <- visae:::shiny_domain_grade(data,
+                                        selected_cycle = input$selected_cycle_domain_grade,
+                                        contr_indicator = input$contr_domain_grade,
+                                        mass_indicator = input$mass_domain_grade,
+                                        contr_threshold = input$contr_threshold_domain_grade/100,
+                                        mass_threshold = input$mass_threshold_domain_grade/100)$tab_rel
     })
 
     output$ae_domain_grade_table <- DT::renderDT({tabInput_domain_grade()}, escape = FALSE)
 
     plotInput_domain_grade <- reactive({
-      gp <- shiny_domain_grade(data,
-                         selected_cycle =
-                           input$selected_cycle_domain_grade,
-                         contr_indicator = input$contr_domain_grade,
-                         mass_indicator = input$mass_domain_grade,
-                         contr_threshold = input$contr_threshold_domain_grade/100,
-                         mass_threshold = input$mass_threshold_domain_grade/100)$asymmetric_plot
+      gp <- visae:::shiny_domain_grade(data,
+                                       selected_cycle =
+                                         input$selected_cycle_domain_grade,
+                                       contr_indicator = input$contr_domain_grade,
+                                       mass_indicator = input$mass_domain_grade,
+                                       contr_threshold = input$contr_threshold_domain_grade/100,
+                                       mass_threshold = input$mass_threshold_domain_grade/100)$asymmetric_plot
 
     })
 
     output$ae_domain_grade_biplot <- renderPlot({print(plotInput_domain_grade())})
 
     output$ae_domain_grade_contr_table <- DT::renderDataTable(
-      shiny_domain_grade(data,
-                         selected_cycle =
-                           input$selected_cycle_domain_grade,
-                         contr_indicator = input$contr_domain_grade,
-                         mass_indicator = input$mass_domain_grade,
-                         contr_threshold = input$contr_threshold_domain_grade/100,
-                         mass_threshold = input$mass_threshold_domain_grade/100)$tab_contr
+      visae:::shiny_domain_grade(data,
+                                 selected_cycle =
+                                   input$selected_cycle_domain_grade,
+                                 contr_indicator = input$contr_domain_grade,
+                                 mass_indicator = input$mass_domain_grade,
+                                 contr_threshold = input$contr_threshold_domain_grade/100,
+                                 mass_threshold = input$mass_threshold_domain_grade/100)$tab_contr
     )
 
     output$downloadplot_domain_grade <- downloadHandler(
@@ -559,40 +565,40 @@ server = function(input, output, session) {
     shinyjs::js$enabletabT("Term")
 
      tabInput_term <- reactive({
-      tab <- shiny_term(data,
-                 selected_cycle = input$selected_cycle_term,
-                 selected_domain = input$selected_domain_term,
-                 selected_grade = input$selected_grade_term,
-                 contr_indicator = input$contr_term,
-                 mass_indicator = input$mass_term,
-                 contr_threshold = input$contr_threshold_term/100,
-                 mass_threshold = input$mass_threshold_term/100)$tab_rel
+       tab <- visae:::shiny_term(data,
+                                 selected_cycle = input$selected_cycle_term,
+                                 selected_domain = input$selected_domain_term,
+                                 selected_grade = input$selected_grade_term,
+                                 contr_indicator = input$contr_term,
+                                 mass_indicator = input$mass_term,
+                                 contr_threshold = input$contr_threshold_term/100,
+                                 mass_threshold = input$mass_threshold_term/100)$tab_rel
     })
 
     output$ae_term_table <- DT::renderDT({tabInput_term()}, escape = FALSE)
 
     plotInput_term <- reactive({
-      gp <- shiny_term(data,
-                       selected_cycle = input$selected_cycle_term,
-                       selected_domain = input$selected_domain_term,
-                       selected_grade = input$selected_grade_term,
-                       contr_indicator = input$contr_term,
-                       mass_indicator = input$mass_term,
-                       contr_threshold = input$contr_threshold_term/100,
-                       mass_threshold = input$mass_threshold_term/100)$asymmetric_plot
+      gp <- visae:::shiny_term(data,
+                               selected_cycle = input$selected_cycle_term,
+                               selected_domain = input$selected_domain_term,
+                               selected_grade = input$selected_grade_term,
+                               contr_indicator = input$contr_term,
+                               mass_indicator = input$mass_term,
+                               contr_threshold = input$contr_threshold_term/100,
+                               mass_threshold = input$mass_threshold_term/100)$asymmetric_plot
     })
 
     output$ae_term_biplot  <- renderPlot({print(plotInput_term())})
 
     output$ae_term_contr_table <- DT::renderDataTable(
-      shiny_term(data,
-                 selected_cycle = input$selected_cycle_term,
-                 selected_domain = input$selected_domain_term,
-                 selected_grade = input$selected_grade_term,
-                 contr_indicator = input$contr_term,
-                 mass_indicator = input$mass_term,
-                 contr_threshold = input$contr_threshold_term/100,
-                 mass_threshold = input$mass_threshold_term/100)$tab_contr
+      visae:::shiny_term(data,
+                         selected_cycle = input$selected_cycle_term,
+                         selected_domain = input$selected_domain_term,
+                         selected_grade = input$selected_grade_term,
+                         contr_indicator = input$contr_term,
+                         mass_indicator = input$mass_term,
+                         contr_threshold = input$contr_threshold_term/100,
+                         mass_threshold = input$mass_threshold_term/100)$tab_contr
     )
 
     output$downloadplot_term <- downloadHandler(
@@ -619,36 +625,37 @@ server = function(input, output, session) {
 
 
     tabInput_term_grade <- reactive({
-      shiny_term_grade(data,
-                       selected_cycle = input$selected_cycle_term_grade,
-                       selected_domain = input$selected_domain_term_grade,
-                       contr_indicator = input$contr_term_grade,
-                       mass_indicator = input$mass_term_grade,
-                       contr_threshold = input$contr_threshold_term_grade/100,
-                       mass_threshold = input$mass_threshold_term_grade/100)$tab_rel
+      visae:::shiny_term_grade(data,
+                               selected_cycle = input$selected_cycle_term_grade,
+                               selected_domain = input$selected_domain_term_grade,
+                               contr_indicator = input$contr_term_grade,
+                               mass_indicator = input$mass_term_grade,
+                               contr_threshold = input$contr_threshold_term_grade/100,
+                               mass_threshold = input$mass_threshold_term_grade/100)$tab_rel
     })
 
     output$ae_term_grade_table <- DT::renderDT({tabInput_term_grade()}, escape = FALSE)
 
-    plotInput_term_grade <- reactive({gp <- shiny_term_grade(data,
-                                                  selected_cycle = input$selected_cycle_term_grade,
-                                                  selected_domain = input$selected_domain_term_grade,
-                                                  contr_indicator = input$contr_term_grade,
-                                                  mass_indicator = input$mass_term_grade,
-                                                  contr_threshold = input$contr_threshold_term_grade/100,
-                                                  mass_threshold = input$mass_threshold_term_grade/100)$asymmetric_plot
+    plotInput_term_grade <- reactive({
+      visae:::shiny_term_grade(data,
+                               selected_cycle = input$selected_cycle_term_grade,
+                               selected_domain = input$selected_domain_term_grade,
+                               contr_indicator = input$contr_term_grade,
+                               mass_indicator = input$mass_term_grade,
+                               contr_threshold = input$contr_threshold_term_grade/100,
+                               mass_threshold = input$mass_threshold_term_grade/100)$asymmetric_plot
     })
 
     output$ae_term_grade_biplot <- renderPlot({print(plotInput_term_grade())})
 
     output$ae_term_grade_contr_table <- DT::renderDataTable(
-      shiny_term_grade(data,
-                       selected_cycle = input$selected_cycle_term_grade,
-                       selected_domain = input$selected_domain_term_grade,
-                       contr_indicator = input$contr_term_grade,
-                       mass_indicator = input$mass_term_grade,
-                       contr_threshold = input$contr_threshold_term_grade/100,
-                       mass_threshold = input$mass_threshold_term_grade/100)$tab_contr
+      visae:::shiny_term_grade(data,
+                               selected_cycle = input$selected_cycle_term_grade,
+                               selected_domain = input$selected_domain_term_grade,
+                               contr_indicator = input$contr_term_grade,
+                               mass_indicator = input$mass_term_grade,
+                               contr_threshold = input$contr_threshold_term_grade/100,
+                               mass_threshold = input$mass_threshold_term_grade/100)$tab_contr
     )
 
     output$downloadplot_term_grade <- downloadHandler(
