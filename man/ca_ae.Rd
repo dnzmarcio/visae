@@ -64,14 +64,14 @@ ae_domain <- sample(c("D", "E"), size = 100, replace = TRUE)
 ae_term <- sample(c("F", "G", "H", "I"), size = 100, replace = TRUE)
 df <- tibble(id = id, trt = group,
             ae_g = ae_grade, ae_d = ae_domain, ae_t = ae_term)
-test <- df |> ca_ae(., id = id,
-                    group = trt,
-                    ae = ae_g,
-                    label = "AE",
-                    contr_indicator = TRUE,
-                    mass_indicator = TRUE,
-                    contr_threshold = 0.01,
-                    mass_threshold = 0.01)
+test <- df |> ca_ae(id = id,
+                   group = trt,
+                   ae = ae_g,
+                   label = "AE",
+                   contr_indicator = TRUE,
+                   mass_indicator = TRUE,
+                   contr_threshold = 0.01,
+                   mass_threshold = 0.01)
 
 }
 \references{
